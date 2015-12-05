@@ -26,9 +26,17 @@
  *
  */
 
-#include <iostream>
 #include "board.h"
+#include <gtest/gtest.h>
 
-int main(int argc, char **argv) {
-    return 0;
+TEST(IndependentMethod, ResetsToZero)
+{
+    std::vector<unsigned> values1 = {2,3,4};
+    std::vector<unsigned> values2 = {4,1,0};
+    line line1(3,row,values1);
+    line line2(3,row,values2);
+    line line3 = line1 + line2;
+    EXPECT_EQ(line3.getValue(0), 6);
+    EXPECT_EQ(line3.getValue(1), 4);
+    EXPECT_EQ(line3.getValue(2), 4);
 }
