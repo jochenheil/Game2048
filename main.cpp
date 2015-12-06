@@ -26,9 +26,102 @@
  *
  */
 
+/*!\file main.cpp
+ * \brief Main + IO funtions of the 2048 game.
+ * 
+ * This file contains the main function of the 2048 game including the event loop.
+ * Also includes the io functions used to gather user input from STDIN.
+ * 
+ */
+
 #include <iostream>
 #include "board.h"
 
+/*! \brief Get the board size from STDIN.
+ * 
+ *  Get the board size from STDIN. Catch erroneous input.
+ * 
+ *  \return The size of the 2048 board.
+ */
+unsigned getBoardSize() {
+    
+    int boardSize;
+    
+    for (;;) {
+        std::cout << "How large should the board be?" << std::endl;
+        if (std::cin >> boardSize) {
+            break;
+        } else {
+            std::cout << "You must enter a small integer Number! Please retry." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+    std::cout << "using a board of size " << boardSize << "." << std::endl;
+    return boardSize;
+}
+
+/*! \brief Get a single character (a, s, d, w or q) from the keyboard.
+ * 
+ *  Get a single character (a, s, d, w or q) from the keyboard. These are used to 
+ *  play the game or exit (q).
+ * 
+ *  \return The character obtained from the keybord.
+ */
+char getActionCommandKey() {
+    char actionCommandKey = ' ';
+    std::string actionCommandKeyString;
+    int charCode = 0;
+    bool isValidCmdKey;
+    do {
+        /* 
+         * I know that getchar needs the user to hit enter, but direct action
+         * upon hitting a key is not supported on the linux console.
+         */
+        actionCommandKey = char(std::getchar());
+    } while(actionCommandKey != 'a' && actionCommandKey && 's' && actionCommandKey != 'd' && actionCommandKey != 'w' && actionCommandKey != 'q');
+    return actionCommandKey;
+}
+
+/*! \brief Main routine.
+ * 
+ *  Main routine containing the main function of the 2048 game including the event loop.
+ * 
+ *  \param argc The number of commandline elements.
+ *  \param argv The commandline elements.
+ * 
+ *  \return The error code.
+ */
 int main(int argc, char **argv) {
-    return 0;
+    
+    // Get board size from STDIN.
+    unsigned boardSize = getBoardSize();
+    
+    // Make new board.
+    unsigned score = 0;
+    board myBoard(boardSize);
+
+    // Refresh screen.
+    std::cout << std::string(50,'\n');
+
+    // Draw screen for the first time.
+    std::cout << "Score: " << score << std::endl;
+    myBoard.draw();
+ 
+    // Event loop.
+    bool isFinished = false;
+    char actionCommandKey;
+    while(! isFinished) {
+        actionCommandKey = getActionCommandKey();
+        if(actionCommandKey == 'q') {
+            isFinished = true;
+        }
+        else {
+            std::cout << std::string(50,'\n');
+            std::cout << "Score: " << score << std::endl;
+            myBoard.draw();
+        }
+    }
+    
+    return EXIT_SUCCESS;
 }

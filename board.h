@@ -26,10 +26,17 @@
  *
  */
 
+/*!\file board.h 
+ * \brief File contains the definition of classes and functions for drawing and 
+ * using the 2048 board.
+ * 
+ */
+
 #include <cassert>
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #ifndef BOARD_H
 #define BOARD_H
@@ -48,16 +55,75 @@ private:
     unsigned size; /*!< The number of rows and columns. */
     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
 public:
-    void draw(); /*!< Draw the board to STDOUT. */
-    board(const unsigned size); /*!< Constructor for board. */
-    ~board(); /*!< Destructor for board. */
-    line getRow(const unsigned rowNum) const; /*!< Get a single row from the board. */
+    /*! \brief Draw the board.
+     * 
+     *  Draw the board to STDOUT.
+     * 
+     */
+    void draw();
+    
+    /*! \brief Make a new board.
+     * 
+     *  Constructor for a board of a certain size.
+     * 
+     *  \param size The number of rows and columns on the board.
+     * 
+     */
+    board(const unsigned size);
+    
+    ~board(); /*!< Destructor that deletes the board object. */
+    
+    /*! \brief Get a row.
+     * 
+     *  Get a row from a position on the board.
+     * 
+     *  \param rowNum The position of the row that should be returned.
+     *  \return A line object representing the row.
+     */
+    line getRow(const unsigned rowNum) const;
+    
+    /*! \brief Get a column.
+     * 
+     *  Get a column from a position on the board.
+     * 
+     *  \param colNum The position of the column that should be returned.
+     *  \return A line object representing the column.
+     */
     line getCol(const unsigned colNum) const; /*!< Get a single column from the board. */
-    void setRow(const line & row); /*!< Set a single column on the board. */
-    void setCol(const line & col); /*!< Set a single column on the board. */
+    
+    /*! \brief Set a row.
+     * 
+     *  Set a row on a position on the board.
+     * 
+     *  \param rowToSet The line object with the cells that should be written to the board.
+     *  \param rowNum The position of the row that should be returned.
+     */
+    void setRow(const line & rowToSet,const unsigned rowNum);
+    
+    /*! \brief Set a column.
+     * 
+     *  Set a column on a position on the board.
+     * 
+     *  \param colToSet The line object with the cells that should be written to the board.
+     *  \param colNum The position of the column that should be returned.
+     */
+    void setCol(const line & colToSet,const unsigned colNum);
 };
 
-enum { row = true, col = false }; /*!< Enum used to determine whether a line is a row or a column. */
+/*! \brief Center a number inside a string.
+ *
+ *  This is used to center the number inside a cell on the board on which 2048 is played.
+ *
+ *  \param width Target width of the string.
+ *  \param inputNumber The number to convert to a centered string.
+ *  \return A centered string containing inputNumber.
+ */
+std::string centerNumberstring(const unsigned width,const unsigned inputNumber);
+
+/*! \brief Enum used to determine whether a line is a row or a column.
+ *
+ */
+enum { row = true, col = false };
 
 /*! \brief A line of cells on the 2048 board.
  *
@@ -66,17 +132,55 @@ enum { row = true, col = false }; /*!< Enum used to determine whether a line is 
  */
 class line
 {
+    friend class board;
 private:
     unsigned size; /*!< The number of cells in the line. */
     bool rowOrCol; /*!< Whether the line is a row or a column. Row is true, column is false. */
     std::vector<unsigned> values; /*!< The values in the line */
 public:
-    line(const unsigned & size,const bool & rowOrCol,const std::vector<unsigned> & values); /*!< Constructor for line. */
-    line& operator = (const line& right); /*!< Constructor for line. */
-    line operator+(const line& right); /*!< Destructor for line. */
-    bool isRow(); /*!< Check whether line is a row. */
-    bool isCol(); /*!< Check whether line is a column. */
-    unsigned getValue(unsigned num); /*!< Get value of cell number num starting from below/left. */
+ 
+    /*! \brief Constructor for line.
+     * 
+     *  Create a line (i.e. a row or a column) with a certain number of elements with predefined values.
+     *
+     *  \param size Target width of the string.
+     *  \param rowOrCol Whether the line is a row or a column. Row is true, column is false.
+     *  \param values The values of the cells in the line.
+     */
+    line(const unsigned & size,const bool & rowOrCol,const std::vector<unsigned> & values);
+
+    /*! \brief Set one line equal to another.
+     * 
+     *  \param right The line on the right side of the "+" sign.
+     *  \return The address of the new line.
+     */
+    line& operator = (const line& right);
+
+    line operator+(const line& right); /*!< Add two lines. Beware: Does not commute! */
+
+    /*! \brief Check whether a line is a row.
+     * 
+     *  \return True if it is a row, false otherwise.
+     */
+    bool isRow();
+
+    /*! \brief Check whether a line is a column.
+     * 
+     *  \return True if it is a column, false otherwise.
+     */
+    bool isCol();
+
+    /*! \brief Get a value on the line.
+     * 
+     *  Get the value of the cell at position num in the line.
+     *
+     *  \param num The position of the cell whose value should be returned.
+     *  \return The values of the cell.
+     */
+    unsigned getValue(const unsigned num); /*!< Get value of cell number num starting from below/left. */
+
+    void print(); /*!< Print line to STDOUT (for debugging). */
+
     ~line(); /*!< Destructor for line. */
 };
 

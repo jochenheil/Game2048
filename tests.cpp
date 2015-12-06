@@ -29,7 +29,7 @@
 #include "board.h"
 #include <gtest/gtest.h>
 
-TEST(IndependentMethod, ResetsToZero)
+TEST(IndependentMethod, ResetsToZero1)
 {
     std::vector<unsigned> values1 = {2,3,4};
     std::vector<unsigned> values2 = {4,1,0};
@@ -39,4 +39,38 @@ TEST(IndependentMethod, ResetsToZero)
     EXPECT_EQ(line3.getValue(0), 6);
     EXPECT_EQ(line3.getValue(1), 4);
     EXPECT_EQ(line3.getValue(2), 4);
+}
+
+TEST(IndependentMethod, ResetsToZero2)
+{
+    board myBoard(3);
+    line testCol(3,col,std::vector<unsigned>({1,2,3}));
+    myBoard.setCol(testCol,2);
+    line testRow(3,row,std::vector<unsigned>({16,15,14}));
+    myBoard.setRow(testRow,0);
+    line line1 = myBoard.getRow(0);
+    line line2 = myBoard.getRow(1);
+    line line3 = myBoard.getRow(2);
+    line line4 = myBoard.getCol(0);
+    line line5 = myBoard.getCol(1);
+    line line6 = myBoard.getCol(2);
+    EXPECT_EQ(line1.getValue(0),16);
+    EXPECT_EQ(line1.getValue(1),0);
+    EXPECT_EQ(line1.getValue(2),0);
+    EXPECT_EQ(line2.getValue(0),15);
+    EXPECT_EQ(line2.getValue(1),0);
+    EXPECT_EQ(line2.getValue(2),0);
+    EXPECT_EQ(line3.getValue(0),14);
+    EXPECT_EQ(line3.getValue(1),2);
+    EXPECT_EQ(line3.getValue(2),3);
+
+    EXPECT_EQ(line4.getValue(0),16);
+    EXPECT_EQ(line4.getValue(1),15);
+    EXPECT_EQ(line4.getValue(2),14);
+    EXPECT_EQ(line5.getValue(0),0);
+    EXPECT_EQ(line5.getValue(1),0);
+    EXPECT_EQ(line5.getValue(2),2);
+    EXPECT_EQ(line6.getValue(0),0);
+    EXPECT_EQ(line6.getValue(1),0);
+    EXPECT_EQ(line6.getValue(2),3);
 }

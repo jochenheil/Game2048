@@ -26,27 +26,64 @@
  *
  */
 
+/*!\file board.cpp
+ * \brief File contains the implementation of classes and functions for drawing 
+ * and using the 2048 board.
+ * 
+ */
+
 #include "board.h"
 
 board::board(const unsigned size)
 {
-    assert(this->size > 0);
     this->size = size;
+
+    // Initialize board with all cells = 0.
+    this->values.resize(this->size);
+    for(unsigned i = 0; i < this->size; ++i) {
+        this->values.at(i).resize(this->size);
+        for(unsigned j = 0; j < this->size; ++j) {
+            this->values.at(i).at(j) = 0;
+        }
+    }
 }
 
 board::~board()
 {
-
 }
 
 void board::draw()
 {
+    // Check if the number of rows/columns/cells is valid.
+    assert(this->values.size() == this->size);
+    for(unsigned i = 0; i < this->size; ++i) assert(this->values.at(i).size() == this->size);
 
+    // Draw board.
+    for(unsigned k = 0; k < this->size; ++k) {
+        for(unsigned i = 0; i < this->size; ++i) {
+            std::cout << "======";
+        }
+        std::cout << std::endl;
+        for(unsigned j = 0; j < 3; ++j) {
+            for(unsigned i = 0; i < this->size; ++i) {
+                std::cout << "|";
+                if(j == 1) std::cout << centerNumberstring(4,this->values.at(i).at(k)); else std::cout <<  "    ";
+                std::cout <<  "|";
+            }
+            std::cout << std::endl;
+        }
+    }
+    for(unsigned i = 0; i < this->size; ++i) {
+        std::cout << "======";
+    }
+    std::cout << std::endl;
 }
 
-line board::getCol(const unsigned int colNum) const
+line board::getCol(const unsigned colNum) const
 {
+    // Check if the number of columns/cells is valid.
     assert(colNum < this->size);
+    
     std::vector<unsigned> newColValues(this->size);
     unsigned count = 0;
     for(unsigned & elem : newColValues) {
@@ -57,38 +94,48 @@ line board::getCol(const unsigned int colNum) const
     return newCol;
 }
 
-line board::getRow(const unsigned int rowNum) const
+line board::getRow(const unsigned rowNum) const
 {
+    // Check if the number of rows/cells is valid.
     assert(rowNum < this->size);
+    
     std::vector<unsigned> newRowValues(this->size);
     unsigned count = 0;
     for(unsigned & elem : newRowValues) {
-        elem = this->values.at(rowNum).at(count);
+        elem = this->values.at(count).at(rowNum);
         count++;
     }
     line newRow(this->size,row,newRowValues);
     return newRow;
 }
 
-void board::setCol(const line& col)
+void board::setCol(const line& colToSet, const unsigned int colNum)
 {
+    // Check if the line to write to the board is really a column with the correct number of cells.
+    assert(colNum < this->size);
+    assert(colToSet.rowOrCol == col);
 
+    for(unsigned i = 0; i < this->size; ++i) this->values.at(i).at(colNum) = colToSet.values.at(i);
 }
 
-void board::setRow(const line& row)
+void board::setRow(const line& rowToSet, const unsigned int rowNum)
 {
+    // Check if the line to write to the board is really a row with the correct number of cells.
+    assert(rowNum < this->size);
+    assert(rowToSet.rowOrCol == row);
 
+    for(unsigned i = 0; i < this->size; ++i) this->values.at(rowNum).at(i) = rowToSet.values.at(i);
 }
 
-
-line::line(const unsigned int& size, const bool& rowOrCol, const std::vector< unsigned int >& values)
+line::line(const unsigned& size, const bool& rowOrCol, const std::vector<unsigned>& values)
 {
     this->size = size;
     this->rowOrCol = rowOrCol;
+    this->values.resize(this->size);
     this->values = values;
 }
 
-unsigned int line::getValue(unsigned int num)
+unsigned line::getValue(const unsigned num)
 {
     if(num < this->size) {
         return this->values.at(num);
@@ -101,12 +148,12 @@ unsigned int line::getValue(unsigned int num)
 
 bool line::isCol()
 {
-
+    if(this->rowOrCol == col) return true; else return false;
 }
 
 bool line::isRow()
 {
-
+    if(this->rowOrCol == row) return true; else return false;
 }
 
 line line::operator+(const line& right)
@@ -138,4 +185,30 @@ line& line::operator=(const line& right)
 line::~line()
 {
 
+}
+
+std::string centerNumberstring(const unsigned width, const unsigned inputNumber)
+{
+    std::string result = std::to_string(inputNumber);
+
+    // Assert that the number is not larger than the cell inside which it should fit.
+    assert(result.size() <= width);
+
+    // Pad the number left and right until the final size of the string is reached.
+    bool padAlternate = true;
+    while(result.size() < width) {
+        if(padAlternate == true) {
+            result.append(" ");
+        }
+        else {
+            std::reverse(result.begin(),result.end());
+            result.append(" ");
+            std::reverse(result.begin(),result.end());
+        }
+        padAlternate = ! padAlternate;
+    }
+
+    // Assert that the final string length corresponds to the original width.
+    assert(result.size() == width);
+    return result;
 }
