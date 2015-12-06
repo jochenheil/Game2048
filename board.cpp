@@ -56,6 +56,11 @@ board::~board()
 {
 }
 
+void board::move(const char direction)
+{
+
+}
+
 void board::draw()
 {
     // Check if the number of rows/columns/cells is valid.

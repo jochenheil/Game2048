@@ -38,6 +38,11 @@
 #include <algorithm>
 #include <cassert>
 
+/*! \brief Idiomatic directions/keys.
+ * 
+ */
+enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'D', QUIT = 'q' };
+
 /*! \brief Generate a new cell value for 2048.
  * 
  *  This is used to generate a new cell value for 2048 using a

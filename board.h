@@ -43,6 +43,11 @@
 class board;
 class line;
 
+/*! \brief Enum used to determine whether a line is a row or a column.
+ * 
+ */
+enum { row = true, col = false };
+
 /*! \brief The board on which 2048 is played.
  *
  *  This is the board on which 2048 is played and on which all game actions
@@ -60,6 +65,8 @@ public:
      * 
      */
     void draw();
+    
+    void move(const char direction);
     
     /*! \brief Make a new board.
      * 
@@ -111,11 +118,6 @@ public:
      */
     void setCol(const line & colToSet,const unsigned colNum);
 };
-
-/*! \brief Enum used to determine whether a line is a row or a column.
- *
- */
-enum { row = true, col = false };
 
 /*! \brief A line of cells on the 2048 board.
  *

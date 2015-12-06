@@ -35,6 +35,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include "board.h"
 
 /*! \brief Get the board size from STDIN.
@@ -46,19 +47,30 @@
 unsigned getBoardSize() {
     
     int boardSize;
-    
-    for (;;) {
-        std::cout << "How large should the board be?" << std::endl;
-        if (std::cin >> boardSize) {
-            break;
-        } else {
-            std::cout << "You must enter a small integer Number! Please retry." << std::endl;
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::string input;
+    bool isValid;
+
+    std::cout << "How large should the board be (4)?";    
+    while(!isValid) {
+        std::getline(std::cin,input);
+        if(input.empty()) {
+            boardSize = 4;
+            isValid = true;
+        }
+        else {
+            std::istringstream stream(input);
+            stream >> boardSize;
+            if(boardSize <= 0) {
+                std::cout << "Invalid number. Please enter a positive integer." << std::endl;
+                isValid = false;
+            }
+            else {
+                std::cout << "Using a board of size " << boardSize << "." << std::endl;
+                isValid = true;
+            }
         }
     }
-    std::cout << "using a board of size " << boardSize << "." << std::endl;
-    return boardSize;
+    return unsigned(boardSize);
 }
 
 /*! \brief Get a single character (a, s, d, w or q) from the keyboard.
@@ -79,7 +91,11 @@ char getActionCommandKey() {
          * upon hitting a key is not supported on the linux console.
          */
         actionCommandKey = char(std::getchar());
-    } while(actionCommandKey != 'a' && actionCommandKey && 's' && actionCommandKey != 'd' && actionCommandKey != 'w' && actionCommandKey != 'q');
+    } while(actionCommandKey != UP && 
+            actionCommandKey != DOWN && 
+            actionCommandKey != LEFT && 
+            actionCommandKey != RIGHT && 
+            actionCommandKey != QUIT);
     return actionCommandKey;
 }
 
@@ -112,7 +128,7 @@ int main(int argc, char **argv) {
     board myBoard(boardSize,startValue,startValuePosRow,startValuePosCol);
 
     // Refresh screen + draw board for the first time.
-    std::cout << std::string(50,'\n');
+    std::cout << std::string(80,'\n');
     std::cout << "Score: " << score << std::endl;
     myBoard.draw();
     
@@ -121,10 +137,11 @@ int main(int argc, char **argv) {
     char actionCommandKey;
     while(! isFinished) {
         actionCommandKey = getActionCommandKey();
-        if(actionCommandKey == 'q') {
+        if(actionCommandKey == QUIT) {
             isFinished = true;
         }
         else {
+            myBoard.move(actionCommandKey);
             std::cout << std::string(50,'\n');
             std::cout << "Score: " << score << std::endl;
             myBoard.draw();
