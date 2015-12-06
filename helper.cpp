@@ -26,51 +26,44 @@
  *
  */
 
-#include "board.h"
-#include <gtest/gtest.h>
+/*!\file helper.cpp
+ * \brief File contains the implementation of helper functions for the 2048 game.
+ */
 
-TEST(IndependentMethod, ResetsToZero1)
+#include "helper.h"
+
+unsigned generateCellValue(std::mt19937& mt)
 {
-    std::vector<unsigned> values1 = {2,3,4};
-    std::vector<unsigned> values2 = {4,1,0};
-    line line1(3,row,values1);
-    line line2(3,row,values2);
-    line line3 = line1 + line2;
-    EXPECT_EQ(line3.getValue(0), 6);
-    EXPECT_EQ(line3.getValue(1), 4);
-    EXPECT_EQ(line3.getValue(2), 4);
+    std::uniform_int_distribution<unsigned> startValueDist(1,10);
+    unsigned newCellValue = startValueDist(mt);
+    if(newCellValue > 9) newCellValue = 4; else newCellValue = 2;
+    
+    assert(newCellValue == 4 || newCellValue == 2);
+    return newCellValue;
 }
 
-TEST(IndependentMethod, ResetsToZero2)
+std::string centerNumberstring(const unsigned width, const unsigned inputNumber)
 {
-    board myBoard(3,0,0,0);
-    line testCol(3,col,std::vector<unsigned>({1,2,3}));
-    myBoard.setCol(testCol,2);
-    line testRow(3,row,std::vector<unsigned>({16,15,14}));
-    myBoard.setRow(testRow,0);
-    line line1 = myBoard.getRow(0);
-    line line2 = myBoard.getRow(1);
-    line line3 = myBoard.getRow(2);
-    line line4 = myBoard.getCol(0);
-    line line5 = myBoard.getCol(1);
-    line line6 = myBoard.getCol(2);
-    EXPECT_EQ(line1.getValue(0),16);
-    EXPECT_EQ(line1.getValue(1),0);
-    EXPECT_EQ(line1.getValue(2),0);
-    EXPECT_EQ(line2.getValue(0),15);
-    EXPECT_EQ(line2.getValue(1),0);
-    EXPECT_EQ(line2.getValue(2),0);
-    EXPECT_EQ(line3.getValue(0),14);
-    EXPECT_EQ(line3.getValue(1),2);
-    EXPECT_EQ(line3.getValue(2),3);
-
-    EXPECT_EQ(line4.getValue(0),16);
-    EXPECT_EQ(line4.getValue(1),15);
-    EXPECT_EQ(line4.getValue(2),14);
-    EXPECT_EQ(line5.getValue(0),0);
-    EXPECT_EQ(line5.getValue(1),0);
-    EXPECT_EQ(line5.getValue(2),2);
-    EXPECT_EQ(line6.getValue(0),0);
-    EXPECT_EQ(line6.getValue(1),0);
-    EXPECT_EQ(line6.getValue(2),3);
+    std::string result = std::to_string(inputNumber);
+    
+    // Assert that the number is not larger than the cell inside which it should fit.
+    assert(result.size() <= width);
+    
+    // Pad the number left and right until the final size of the string is reached.
+    bool padAlternate = true;
+    while(result.size() < width) {
+        if(padAlternate == true) {
+            result.append(" ");
+        }
+        else {
+            std::reverse(result.begin(),result.end());
+            result.append(" ");
+            std::reverse(result.begin(),result.end());
+        }
+        padAlternate = ! padAlternate;
+    }
+    
+    // Assert that the final string length corresponds to the original width.
+    assert(result.size() == width);
+    return result;
 }

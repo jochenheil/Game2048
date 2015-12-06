@@ -26,51 +26,37 @@
  *
  */
 
-#include "board.h"
-#include <gtest/gtest.h>
+/*!\file helper.h 
+ * \brief File contains the definitions of helper functions for the 2048 game.
+ */
 
-TEST(IndependentMethod, ResetsToZero1)
-{
-    std::vector<unsigned> values1 = {2,3,4};
-    std::vector<unsigned> values2 = {4,1,0};
-    line line1(3,row,values1);
-    line line2(3,row,values2);
-    line line3 = line1 + line2;
-    EXPECT_EQ(line3.getValue(0), 6);
-    EXPECT_EQ(line3.getValue(1), 4);
-    EXPECT_EQ(line3.getValue(2), 4);
-}
 
-TEST(IndependentMethod, ResetsToZero2)
-{
-    board myBoard(3,0,0,0);
-    line testCol(3,col,std::vector<unsigned>({1,2,3}));
-    myBoard.setCol(testCol,2);
-    line testRow(3,row,std::vector<unsigned>({16,15,14}));
-    myBoard.setRow(testRow,0);
-    line line1 = myBoard.getRow(0);
-    line line2 = myBoard.getRow(1);
-    line line3 = myBoard.getRow(2);
-    line line4 = myBoard.getCol(0);
-    line line5 = myBoard.getCol(1);
-    line line6 = myBoard.getCol(2);
-    EXPECT_EQ(line1.getValue(0),16);
-    EXPECT_EQ(line1.getValue(1),0);
-    EXPECT_EQ(line1.getValue(2),0);
-    EXPECT_EQ(line2.getValue(0),15);
-    EXPECT_EQ(line2.getValue(1),0);
-    EXPECT_EQ(line2.getValue(2),0);
-    EXPECT_EQ(line3.getValue(0),14);
-    EXPECT_EQ(line3.getValue(1),2);
-    EXPECT_EQ(line3.getValue(2),3);
+#ifndef HELPER_H
+#define HELPER_H
 
-    EXPECT_EQ(line4.getValue(0),16);
-    EXPECT_EQ(line4.getValue(1),15);
-    EXPECT_EQ(line4.getValue(2),14);
-    EXPECT_EQ(line5.getValue(0),0);
-    EXPECT_EQ(line5.getValue(1),0);
-    EXPECT_EQ(line5.getValue(2),2);
-    EXPECT_EQ(line6.getValue(0),0);
-    EXPECT_EQ(line6.getValue(1),0);
-    EXPECT_EQ(line6.getValue(2),3);
-}
+#include <random>
+#include <algorithm>
+#include <cassert>
+
+/*! \brief Generate a new cell value for 2048.
+ * 
+ *  This is used to generate a new cell value for 2048 using a
+ *  Mersenne-Twister pseudo-random number generator. The number
+ *  should be either 2 (90 % probability) or 4 (10 % probability).
+ *
+ *  \param mt The Mersenne-Twister RNG.
+ *  \return The random number (2 or 4).
+ */
+unsigned generateCellValue(std::mt19937& mt);
+
+/*! \brief Center a number inside a string.
+ * 
+ *  This is used to center the number inside a cell on the board on which 2048 is played.
+ *
+ *  \param width Target width of the string.
+ *  \param inputNumber The number to convert to a centered string.
+ *  \return A centered string containing inputNumber.
+ */
+std::string centerNumberstring(const unsigned width,const unsigned inputNumber);
+
+#endif // HELPER_H

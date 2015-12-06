@@ -33,8 +33,9 @@
  */
 
 #include "board.h"
+#include "helper.h"
 
-board::board(const unsigned size)
+board::board(const unsigned size, const unsigned startValue, const unsigned startValueRow, const unsigned startValueCol)
 {
     this->size = size;
 
@@ -46,6 +47,9 @@ board::board(const unsigned size)
             this->values.at(i).at(j) = 0;
         }
     }
+    
+    // Start with a single occupied cell.
+    this->values.at(startValueRow).at(startValueCol) = startValue;
 }
 
 board::~board()
@@ -185,30 +189,4 @@ line& line::operator=(const line& right)
 line::~line()
 {
 
-}
-
-std::string centerNumberstring(const unsigned width, const unsigned inputNumber)
-{
-    std::string result = std::to_string(inputNumber);
-
-    // Assert that the number is not larger than the cell inside which it should fit.
-    assert(result.size() <= width);
-
-    // Pad the number left and right until the final size of the string is reached.
-    bool padAlternate = true;
-    while(result.size() < width) {
-        if(padAlternate == true) {
-            result.append(" ");
-        }
-        else {
-            std::reverse(result.begin(),result.end());
-            result.append(" ");
-            std::reverse(result.begin(),result.end());
-        }
-        padAlternate = ! padAlternate;
-    }
-
-    // Assert that the final string length corresponds to the original width.
-    assert(result.size() == width);
-    return result;
 }

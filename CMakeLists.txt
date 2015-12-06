@@ -13,7 +13,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-std=c++11 -g -pedantic)
 endif()
 
-add_library(board board.cpp)
+add_library(board board.cpp helper.cpp)
 add_executable(game2048 main.cpp)
 target_link_libraries(game2048 board)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION bin)

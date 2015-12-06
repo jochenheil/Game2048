@@ -96,18 +96,26 @@ int main(int argc, char **argv) {
     
     // Get board size from STDIN.
     unsigned boardSize = getBoardSize();
+
+    // Initialize random number generator.
+    std::random_device rd;
+    std::mt19937 mt(rd());
+
+    // Generate start value and its X(row) and Y(column) position.
+    unsigned startValue = generateCellValue(mt);
+    std::uniform_int_distribution<unsigned> startPosDist(0,boardSize-1);
+    unsigned startValuePosRow = startPosDist(mt);
+    unsigned startValuePosCol = startPosDist(mt);
     
     // Make new board.
     unsigned score = 0;
-    board myBoard(boardSize);
+    board myBoard(boardSize,startValue,startValuePosRow,startValuePosCol);
 
-    // Refresh screen.
+    // Refresh screen + draw board for the first time.
     std::cout << std::string(50,'\n');
-
-    // Draw screen for the first time.
     std::cout << "Score: " << score << std::endl;
     myBoard.draw();
- 
+    
     // Event loop.
     bool isFinished = false;
     char actionCommandKey;

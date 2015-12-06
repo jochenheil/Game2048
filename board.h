@@ -32,14 +32,13 @@
  * 
  */
 
-#include <cassert>
-#include <cstdlib>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-
 #ifndef BOARD_H
 #define BOARD_H
+
+#include <cassert>
+#include <vector>
+#include <iostream>
+#include "helper.h"
 
 class board;
 class line;
@@ -67,9 +66,12 @@ public:
      *  Constructor for a board of a certain size.
      * 
      *  \param size The number of rows and columns on the board.
+     *  \param startValue The start value placed on an arbitrary cell on the board at the start of the game.
+     *  \param startValueRow The row number of the start value. 
+     *  \param startValueCol The column number of the start value.
      * 
      */
-    board(const unsigned size);
+    board(const unsigned size, const unsigned startValue, const unsigned startValueRow, const unsigned startValueCol);
     
     ~board(); /*!< Destructor that deletes the board object. */
     
@@ -109,16 +111,6 @@ public:
      */
     void setCol(const line & colToSet,const unsigned colNum);
 };
-
-/*! \brief Center a number inside a string.
- *
- *  This is used to center the number inside a cell on the board on which 2048 is played.
- *
- *  \param width Target width of the string.
- *  \param inputNumber The number to convert to a centered string.
- *  \return A centered string containing inputNumber.
- */
-std::string centerNumberstring(const unsigned width,const unsigned inputNumber);
 
 /*! \brief Enum used to determine whether a line is a row or a column.
  *
