@@ -37,55 +37,73 @@
 
 board::board(std::mt19937& mt, const unsigned size)
 {
-    this->mt = mt;
     this->size = size;
 
     // Initialize board with all cells = 0.
     this->values.resize(this->size);
-    for(unsigned i = 0; i < this->size; ++i) {
-        this->values.at(i).resize(this->size);
-        for(unsigned j = 0; j < this->size; ++j) {
-            this->values.at(i).at(j) = 0;
-        }
-    }
+    this->zero();
     
     // Start with a single occupied cell.
-    this->addRandomValue();
+    this->addRandomValue(mt);
 }
 
 board::~board()
 {
 }
 
-void board::addRandomValue()
+void board::zero()
 {
-    // Number of empty cells.
-    unsigned emptyCount = 0;
-
-    // Count empty cells.
+    // Set all cells to 0.
     for(unsigned i = 0; i < this->size; ++i) {
+        this->values.at(i).resize(this->size);
         for(unsigned j = 0; j < this->size; ++j) {
-            if(this->values.at(i).at(j) == 0) emptyCount++;
-        }
-    }
-
-    // Get a random empty cell and a new random value of 2 or 4.
-    std::uniform_int_distribution<unsigned> randomCellDist(0,emptyCount);
-    unsigned randomCellCount = randomCellDist(mt);
-    
-    // Fill random cell with 2 or 4.
-    unsigned newEmptyCount = 0;
-    for(unsigned i = 0; i < this->size; ++i) {
-        for(unsigned j = 0; j < this->size; ++j) {
-            if(this->values.at(i).at(j) == 0) {
-                if(newEmptyCount == randomCellCount) this->values.at(i).at(j) = generateCellValue(this->mt);
-                newEmptyCount++;
-            }
+            this->values.at(i).at(j) = 0;
         }
     }
 }
 
-void board::move(const char direction)
+std::vector< std::tuple<unsigned,unsigned> > board::getEmptyCells()
+{
+    std::vector<std::tuple<unsigned,unsigned> > emptyCells;
+    for(unsigned i = 0; i < this->size; ++i) {
+        for(unsigned j = 0; j < this->size; ++j) {
+            if(this->values.at(i).at(j) == 0) emptyCells.push_back(std::tuple<unsigned,unsigned>(i,j));
+        }
+    }
+    return emptyCells;
+}
+
+bool board::addRandomValue(std::mt19937& mt)
+{
+   
+    // Get a list of all empty cell x,y-indices.
+    std::vector<std::tuple<unsigned,unsigned> > emptyCells = getEmptyCells();
+
+    if(emptyCells.size() == 0) {
+        // If all cells are full, return false.
+        return false;
+    }
+    else {
+        // If at least one cell is empty...
+        
+        // ...generate a random number {2,4}...
+        unsigned newValue = generateCellValue(mt);
+
+        // ...get a random empty cell...
+        std::uniform_int_distribution<unsigned> randomCellDist(0,emptyCells.size()-1);
+        unsigned randomCellNum = randomCellDist(mt);
+        std::tuple<unsigned,unsigned> cellToModifyId = emptyCells.at(randomCellNum);
+        
+        // ...and assign the new value.
+        unsigned rowId = std::get<0>(cellToModifyId);
+        unsigned colId = std::get<1>(cellToModifyId);
+        this->values.at(rowId).at(colId) = newValue;
+
+        return true;
+    }
+}
+
+bool board::move(const char direction,unsigned& score,std::mt19937& mt)
 {
     switch(direction){
         case UP:
@@ -103,6 +121,9 @@ void board::move(const char direction)
         default:
             break;
         }
+        
+        // After the move add a new random cell/value.
+        return this->addRandomValue(mt);
 }
 
 void board::draw()

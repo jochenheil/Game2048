@@ -41,7 +41,7 @@
 /*! \brief Idiomatic directions/keys.
  * 
  */
-enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'D', QUIT = 'q' };
+enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'd', QUIT = 'q' };
 
 /*! \brief Generate a new cell value for 2048.
  * 

@@ -135,10 +135,16 @@ int main(int argc, char **argv) {
             isFinished = true;
         }
         else {
-            myBoard.move(actionCommandKey);
-            std::cout << std::string(50,'\n');
-            std::cout << "Score: " << score << std::endl;
-            myBoard.draw();
+            if(myBoard.move(actionCommandKey,score,mt)) {
+                std::cout << std::string(50,'\n');
+                myBoard.draw();
+            }
+            else {
+                std::cout << "!!! Game over !!!" << std::endl;
+                std::cout << "Score: " << score << std::endl;
+                isFinished = true;
+            }
+
         }
     }
     

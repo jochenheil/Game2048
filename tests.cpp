@@ -29,7 +29,7 @@
 #include "board.h"
 #include <gtest/gtest.h>
 
-TEST(IndependentMethod, ResetsToZero1)
+TEST(lineBoardTest, checkAddition)
 {
     std::vector<unsigned> values1 = {2,3,4};
     std::vector<unsigned> values2 = {4,1,0};
@@ -41,13 +41,14 @@ TEST(IndependentMethod, ResetsToZero1)
     EXPECT_EQ(line3.getValue(2), 4);
 }
 
-TEST(IndependentMethod, ResetsToZero2)
+TEST(lineBoardTest, checkGetterSetter)
 {
     // Initialize random number generator.
     std::random_device rd;
     std::mt19937 mt(rd());
 
     board myBoard(mt,3);
+    myBoard.zero();
     line testCol(3,col,std::vector<unsigned>({1,2,3}));
     myBoard.setCol(testCol,2);
     line testRow(3,row,std::vector<unsigned>({16,15,14}));
@@ -78,3 +79,19 @@ TEST(IndependentMethod, ResetsToZero2)
     EXPECT_EQ(line6.getValue(1),0);
     EXPECT_EQ(line6.getValue(2),3);
 }
+
+TEST(lineBoardTest, checkAddRandomValueReturn)
+{
+    // Initialize random number generator.
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    
+    // Check if the game stops after adding one number too many...
+    board myBoard(mt,2);
+    myBoard.addRandomValue(mt);
+    myBoard.addRandomValue(mt);
+    myBoard.addRandomValue(mt);
+    bool testval = myBoard.addRandomValue(mt);
+    EXPECT_EQ(testval,false);
+}
+

@@ -57,7 +57,6 @@ enum { row = true, col = false };
 class board
 {
 private:
-    std::mt19937 mt; /*!< The Mersenne-Twister random number generator used for the board. */
     unsigned size; /*!< The number of rows and columns. */
     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
 public:
@@ -67,19 +66,42 @@ public:
      * 
      */
     void draw();
-    
-    void addRandomValue();
 
-    void move(const char direction);
+    /*! \brief Set all cells to 0.
+     * 
+     *  Set all cells to 0.
+     * 
+     */
+    void zero();
+
+    /*! \brief Add 2 or 4 to some random empty cell.
+     * 
+     *  Add 2 or 4 to some random empty cell.
+     * 
+     * \param mt The Mersenne-Twister random number generator.
+     * \return Whether there was still space to add the new value.
+     * 
+     */
+    bool addRandomValue(std::mt19937& mt);
+
+    /*! \brief Make a game move.
+     * 
+     *  Make a game move: move cell lines and update the board and the score.
+     * 
+     * \param direction The direction in which to move the cells.
+     * \param score The score that needs updating.
+     * \param mt The Mersenne-Twister random number generator.
+     * \return Whether there was still space to add the new value, i.e. if the game is over (false).
+     * 
+     */
+    bool move(const char direction,unsigned& score,std::mt19937& mt);
     
     /*! \brief Make a new board.
      * 
      *  Constructor for a board of a certain size.
      * 
-     *  \param size The number of rows and columns on the board.
-     *  \param startValue The start value placed on an arbitrary cell on the board at the start of the game.
-     *  \param startValueRow The row number of the start value. 
-     *  \param startValueCol The column number of the start value.
+     * \param size The number of rows and columns on the board.
+     * \param mt The Mersenne-Twister random number generator.
      * 
      */
     board(std::mt19937& mt,const unsigned size);
@@ -121,6 +143,14 @@ public:
      *  \param colNum The position of the column that should be returned.
      */
     void setCol(const line & colToSet,const unsigned colNum);
+
+    /*! \brief Get coordinates of empty cells.
+     * 
+     *  Find all empty cells and return their x,y-indices as std::tuple<unsigned,unsigned>.
+     *  \return A list of x,y-indices of empty cells.
+     * 
+     */    
+    std::vector<std::tuple<unsigned,unsigned> > getEmptyCells();
 };
 
 /*! \brief A line of cells on the 2048 board.
