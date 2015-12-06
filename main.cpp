@@ -117,15 +117,9 @@ int main(int argc, char **argv) {
     std::random_device rd;
     std::mt19937 mt(rd());
 
-    // Generate start value and its X(row) and Y(column) position.
-    unsigned startValue = generateCellValue(mt);
-    std::uniform_int_distribution<unsigned> startPosDist(0,boardSize-1);
-    unsigned startValuePosRow = startPosDist(mt);
-    unsigned startValuePosCol = startPosDist(mt);
-    
     // Make new board.
     unsigned score = 0;
-    board myBoard(boardSize,startValue,startValuePosRow,startValuePosCol);
+    board myBoard(mt,boardSize);
 
     // Refresh screen + draw board for the first time.
     std::cout << std::string(80,'\n');

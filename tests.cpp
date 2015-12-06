@@ -43,7 +43,11 @@ TEST(IndependentMethod, ResetsToZero1)
 
 TEST(IndependentMethod, ResetsToZero2)
 {
-    board myBoard(3,0,0,0);
+    // Initialize random number generator.
+    std::random_device rd;
+    std::mt19937 mt(rd());
+
+    board myBoard(mt,3);
     line testCol(3,col,std::vector<unsigned>({1,2,3}));
     myBoard.setCol(testCol,2);
     line testRow(3,row,std::vector<unsigned>({16,15,14}));

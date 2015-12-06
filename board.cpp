@@ -35,8 +35,9 @@
 #include "board.h"
 #include "helper.h"
 
-board::board(const unsigned size, const unsigned startValue, const unsigned startValueRow, const unsigned startValueCol)
+board::board(std::mt19937& mt, const unsigned size)
 {
+    this->mt = mt;
     this->size = size;
 
     // Initialize board with all cells = 0.
@@ -49,16 +50,59 @@ board::board(const unsigned size, const unsigned startValue, const unsigned star
     }
     
     // Start with a single occupied cell.
-    this->values.at(startValueRow).at(startValueCol) = startValue;
+    this->addRandomValue();
 }
 
 board::~board()
 {
 }
 
+void board::addRandomValue()
+{
+    // Number of empty cells.
+    unsigned emptyCount = 0;
+
+    // Count empty cells.
+    for(unsigned i = 0; i < this->size; ++i) {
+        for(unsigned j = 0; j < this->size; ++j) {
+            if(this->values.at(i).at(j) == 0) emptyCount++;
+        }
+    }
+
+    // Get a random empty cell and a new random value of 2 or 4.
+    std::uniform_int_distribution<unsigned> randomCellDist(0,emptyCount);
+    unsigned randomCellCount = randomCellDist(mt);
+    
+    // Fill random cell with 2 or 4.
+    unsigned newEmptyCount = 0;
+    for(unsigned i = 0; i < this->size; ++i) {
+        for(unsigned j = 0; j < this->size; ++j) {
+            if(this->values.at(i).at(j) == 0) {
+                if(newEmptyCount == randomCellCount) this->values.at(i).at(j) = generateCellValue(this->mt);
+                newEmptyCount++;
+            }
+        }
+    }
+}
+
 void board::move(const char direction)
 {
+    switch(direction){
+        case UP:
+            
+            break;
+        case DOWN:
 
+            break;
+        case LEFT:
+
+            break;
+        case RIGHT:
+
+            break;
+        default:
+            break;
+        }
 }
 
 void board::draw()
@@ -76,7 +120,9 @@ void board::draw()
         for(unsigned j = 0; j < 3; ++j) {
             for(unsigned i = 0; i < this->size; ++i) {
                 std::cout << "|";
-                if(j == 1) std::cout << centerNumberstring(4,this->values.at(i).at(k)); else std::cout <<  "    ";
+
+                // If the value of cell i,j is zero do not print the number
+                if(this->values.at(i).at(k) != 0 && j == 1) std::cout << centerNumberstring(4,this->values.at(i).at(k)); else std::cout <<  "    ";
                 std::cout <<  "|";
             }
             std::cout << std::endl;

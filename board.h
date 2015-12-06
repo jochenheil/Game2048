@@ -38,6 +38,7 @@
 #include <cassert>
 #include <vector>
 #include <iostream>
+#include <random>
 #include "helper.h"
 
 class board;
@@ -56,6 +57,7 @@ enum { row = true, col = false };
 class board
 {
 private:
+    std::mt19937 mt; /*!< The Mersenne-Twister random number generator used for the board. */
     unsigned size; /*!< The number of rows and columns. */
     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
 public:
@@ -66,6 +68,8 @@ public:
      */
     void draw();
     
+    void addRandomValue();
+
     void move(const char direction);
     
     /*! \brief Make a new board.
@@ -78,7 +82,7 @@ public:
      *  \param startValueCol The column number of the start value.
      * 
      */
-    board(const unsigned size, const unsigned startValue, const unsigned startValueRow, const unsigned startValueCol);
+    board(std::mt19937& mt,const unsigned size);
     
     ~board(); /*!< Destructor that deletes the board object. */
     
