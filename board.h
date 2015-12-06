@@ -51,7 +51,7 @@ public:
     void draw(); /*!< Draw the board to STDOUT. */
     board(const unsigned size); /*!< Constructor for board. */
     ~board(); /*!< Destructor for board. */
-    line & getRow(const unsigned rowNum) const; /*!< Get a single row from the board. */
+    line getRow(const unsigned rowNum) const; /*!< Get a single row from the board. */
     line getCol(const unsigned colNum) const; /*!< Get a single column from the board. */
     void setRow(const line & row); /*!< Set a single column on the board. */
     void setCol(const line & col); /*!< Set a single column on the board. */

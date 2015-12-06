@@ -57,7 +57,7 @@ line board::getCol(const unsigned int colNum) const
     return newCol;
 }
 
-line& board::getRow(const unsigned int rowNum) const
+line board::getRow(const unsigned int rowNum) const
 {
     assert(rowNum < this->size);
     std::vector<unsigned> newRowValues(this->size);
@@ -66,8 +66,6 @@ line& board::getRow(const unsigned int rowNum) const
         elem = this->values.at(rowNum).at(count);
         count++;
     }
-    //         line newRow = new line(this->size,row,newRowValues);
-    //         return *newRow;
     line newRow(this->size,row,newRowValues);
     return newRow;
 }
