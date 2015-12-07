@@ -60,8 +60,8 @@ unsigned getBoardSize() {
         else {
             std::istringstream stream(input);
             stream >> boardSize;
-            if(boardSize <= 0) {
-                std::cout << "Invalid number. Please enter a positive integer." << std::endl;
+            if(boardSize <= 1) {
+                std::cout << "Invalid number. Please enter a positive integer > 1." << std::endl;
                 isValid = false;
             }
             else {
@@ -137,6 +137,7 @@ int main(int argc, char **argv) {
         }
         else {
             if(myBoard.move(actionCommandKey,score)) {
+                // Gameover condition 1: 2048 appears on the screen.
                 std::cout << "!!! 2048 REACHED !!!" << std::endl;
                 std::cout << "!!!   Game over  !!!" << std::endl;
                 std::cout << "Score: " << score << std::endl;
@@ -144,6 +145,7 @@ int main(int argc, char **argv) {
             }
             else {
                 if(!myBoard.addRandomValue(mt)) {
+                    // Gameover condition 2: All cells occupied.
                     std::cout << "!!! NO SPACE  !!!" << std::endl;
                     std::cout << "!!! Game over !!!" << std::endl;
                     std::cout << "Score: " << score << std::endl;

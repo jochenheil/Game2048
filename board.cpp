@@ -73,7 +73,7 @@ bool board::addRandomValue(std::mt19937& mt)
 {
    
     // Get a list of all empty cell x,y-indices.
-    std::vector<std::tuple<unsigned,unsigned> > emptyCells = getEmptyCells();
+    std::vector<std::tuple<unsigned,unsigned> > emptyCells = this->getEmptyCells();
 
     if(emptyCells.size() == 0) {
         // If all cells are full, return false.
