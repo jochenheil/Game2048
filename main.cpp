@@ -48,7 +48,7 @@ unsigned getBoardSize() {
     
     int boardSize;
     std::string input;
-    bool isValid;
+    bool isValid = false;
 
     std::cout << "How large should the board be (4)?";    
     while(!isValid) {
