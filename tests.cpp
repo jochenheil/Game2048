@@ -29,23 +29,44 @@
 #include "board.h"
 #include <gtest/gtest.h>
 
-TEST(lineBoardTest, checkAddRandomValueReturn)
+TEST(boardTest, checkAddRandomValue)
 {
     // Initialize random number generator.
     std::random_device rd;
     std::mt19937 mt(rd());
+
+    bool testval; // Whether the board is full or not.
+    std::vector<std::tuple<unsigned,unsigned> > emptyCells; // Holds empty cells indices.
     
-    // Check if the game stops after adding one number too many...
     board myBoard(2);
-    myBoard.addRandomValue(mt);
-    myBoard.addRandomValue(mt);
-    myBoard.addRandomValue(mt);
-    myBoard.addRandomValue(mt);
-    bool testval = myBoard.addRandomValue(mt);
+
+    // Check if cells are added consecutively.
+    emptyCells = myBoard.getEmptyCells();
+    EXPECT_EQ(emptyCells.size(),4);
+    testval = myBoard.addRandomValue(mt);
+    emptyCells = myBoard.getEmptyCells();
+    EXPECT_EQ(emptyCells.size(),3);
+    EXPECT_EQ(testval,true);
+    testval = myBoard.addRandomValue(mt);
+    emptyCells = myBoard.getEmptyCells();
+    EXPECT_EQ(emptyCells.size(),2);
+    EXPECT_EQ(testval,true);
+    testval = myBoard.addRandomValue(mt);
+    emptyCells = myBoard.getEmptyCells();
+    EXPECT_EQ(emptyCells.size(),1);
+    EXPECT_EQ(testval,true);
+    testval = myBoard.addRandomValue(mt);
+    emptyCells = myBoard.getEmptyCells();
+    EXPECT_EQ(emptyCells.size(),0);
+    EXPECT_EQ(testval,true);
+
+    // Check if the game stops after adding one number too many...
+    testval = myBoard.addRandomValue(mt);
+    EXPECT_EQ(emptyCells.size(),0);
     EXPECT_EQ(testval,false);
 }
 
-TEST(lineBoardTest, checkMoveLeft) 
+TEST(boardTest, checkMoveLeft) 
 {
     // Make new board.
     unsigned score = 0;
@@ -62,7 +83,7 @@ TEST(lineBoardTest, checkMoveLeft)
     EXPECT_EQ(gameOver,false);
 }
 
-TEST(lineBoardTest, checkMoveRight) 
+TEST(boardTest, checkMoveRight) 
 {
     // Make new board.
     unsigned score = 0;
@@ -79,7 +100,7 @@ TEST(lineBoardTest, checkMoveRight)
     EXPECT_EQ(gameOver,false);
 }
 
-TEST(lineBoardTest, checkMoveUp) 
+TEST(boardTest, checkMoveUp) 
 {
     // Make new board.
     unsigned score = 0;
@@ -96,7 +117,7 @@ TEST(lineBoardTest, checkMoveUp)
     EXPECT_EQ(gameOver,false);
 }
 
-TEST(lineBoardTest, checkMoveDown) 
+TEST(boardTest, checkMoveDown) 
 {
     // Make new board.
     unsigned score = 0;
