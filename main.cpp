@@ -109,7 +109,7 @@ char getActionCommandKey() {
  *  \return The error code.
  */
 int main(int argc, char **argv) {
-    
+
     // Get board size from STDIN.
     unsigned boardSize = getBoardSize();
 
@@ -150,6 +150,7 @@ int main(int argc, char **argv) {
                     break;
                 }
                 myBoard.draw();
+                std::cout << "Score: " << score << std::endl;
             }
         }
     }
