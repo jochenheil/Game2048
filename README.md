@@ -18,3 +18,12 @@ This is a simple text implementation of the game "2048".
 #### Cmake options:
 * -Dbuild_test=ON/OFF = Whether to build unit tests
 * -Dbuild_doc=ON/OFF = Whether to build doxygen API documentation
+
+#### Build API docs:
+* make doc
+
+#### Run tests:
+Either (native)
+* ./runtests (CTest)
+or
+* make test
