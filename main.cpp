@@ -119,7 +119,8 @@ int main(int argc, char **argv) {
 
     // Make new board.
     unsigned score = 0;
-    board myBoard(mt,boardSize);
+    board myBoard(boardSize);
+    myBoard.addRandomValue(mt);
 
     // Refresh screen + draw board for the first time.
     std::cout << std::string(80,'\n');
@@ -129,22 +130,27 @@ int main(int argc, char **argv) {
     // Event loop.
     bool isFinished = false;
     char actionCommandKey;
-    while(! isFinished) {
+    while(1) {
         actionCommandKey = getActionCommandKey();
         if(actionCommandKey == QUIT) {
-            isFinished = true;
+            break;
         }
         else {
-            if(myBoard.move(actionCommandKey,score,mt)) {
-                std::cout << std::string(50,'\n');
-                myBoard.draw();
+            if(myBoard.move(actionCommandKey,score)) {
+                std::cout << "!!! 2048 REACHED !!!" << std::endl;
+                std::cout << "!!!   Game over  !!!" << std::endl;
+                std::cout << "Score: " << score << std::endl;
+                break;
             }
             else {
-                std::cout << "!!! Game over !!!" << std::endl;
-                std::cout << "Score: " << score << std::endl;
-                isFinished = true;
+                if(!myBoard.addRandomValue(mt)) {
+                    std::cout << "!!! NO SPACE  !!!" << std::endl;
+                    std::cout << "!!! Game over !!!" << std::endl;
+                    std::cout << "Score: " << score << std::endl;
+                    break;
+                }
+                myBoard.draw();
             }
-
         }
     }
     

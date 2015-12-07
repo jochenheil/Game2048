@@ -35,16 +35,13 @@
 #include "board.h"
 #include "helper.h"
 
-board::board(std::mt19937& mt, const unsigned size)
+board::board(const unsigned size)
 {
     this->size = size;
 
     // Initialize board with all cells = 0.
     this->values.resize(this->size);
     this->zero();
-    
-    // Start with a single occupied cell.
-    this->addRandomValue(mt);
 }
 
 board::~board()
@@ -103,27 +100,129 @@ bool board::addRandomValue(std::mt19937& mt)
     }
 }
 
-bool board::move(const char direction,unsigned& score,std::mt19937& mt)
+bool board::move(const char direction,unsigned& score)
 {
+    bool changeACell;
     switch(direction){
         case UP:
-            
+            std::cout << "UP!" << std::endl;
+            // Iterate over all rows.
+            for(unsigned i = 0; i < this->size; ++i) {
+                // Repeat to self-consistency:
+                // First move then add.
+                do {
+                    changeACell = false;
+                    // If cell on the left (j-1) is zero, move current cell one left.
+                    for(unsigned j = 1; j < this->size; ++j) {
+                        if(this->values.at(i).at(j-1) == 0 && this->values.at(i).at(j) != 0) {
+                            this->values.at(i).at(j-1) = this->values.at(i).at(j);
+                            this->values.at(i).at(j) = 0;
+                            changeACell = true;
+                        }
+                    }
+                    // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
+                    for(unsigned j = 0; j < this->size-1; ++j) {
+                        if(this->values.at(i).at(j) == this->values.at(i).at(j+1) && this->values.at(i).at(j) != 0) {
+                            score += this->values.at(i).at(j);
+                            this->values.at(i).at(j) *= 2;
+                            if(this->values.at(i).at(j) == 2048) return true;
+                            this->values.at(i).at(j+1) = 0;
+                            changeACell = true;
+                            break;
+                        }
+                    }
+                } while(changeACell);
+            }
             break;
         case DOWN:
-
+            // Iterate over all rows.
+            for(unsigned i = 0; i < this->size; ++i) {
+                // Repeat to self-consistency:
+                // First move then add.
+                do {
+                    changeACell = false;
+                    // If cell on the left (j-1) is zero, move current cell one left.
+                    for(int j = this->size-2; j >= 0; --j) {
+                        if(this->values.at(i).at(j+1) == 0 && this->values.at(i).at(j) != 0) {
+                            this->values.at(i).at(j+1) = this->values.at(i).at(j);
+                            this->values.at(i).at(j) = 0;
+                            changeACell = true;
+                        }
+                    }
+                    // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
+                    for(unsigned j = this->size-1; j >= 1 ; --j) {
+                        if(this->values.at(i).at(j) == this->values.at(i).at(j-1) && this->values.at(i).at(j) != 0) {
+                            score += this->values.at(i).at(j);
+                            this->values.at(i).at(j) *= 2;
+                            if(this->values.at(i).at(j) == 2048) return true;
+                            this->values.at(i).at(j-1) = 0;
+                            changeACell = true;
+                            break;
+                        }
+                    }
+                } while(changeACell);
+            }
             break;
         case LEFT:
-
+            // Iterate over all columns.
+            for(unsigned i = 0; i < this->size; ++i) {
+                // Repeat to self-consistency:
+                // First move then add.
+                do {
+                    changeACell = false;
+                    // If cell on the left (j-1) is zero, move current cell one left.
+                    for(unsigned j = 1; j < this->size; ++j) {
+                        if(this->values.at(j-1).at(i) == 0 && this->values.at(j).at(i) != 0) {
+                            this->values.at(j-1).at(i) = this->values.at(j).at(i);
+                            this->values.at(j).at(i) = 0;
+                            changeACell = true;
+                        }
+                    }
+                    // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
+                    for(unsigned j = 0; j < this->size-1; ++j) {
+                        if(this->values.at(j).at(i) == this->values.at(j+1).at(i) && this->values.at(j).at(i) != 0) {
+                            score += this->values.at(j).at(i);
+                            this->values.at(j).at(i) *= 2;
+                            if(this->values.at(j).at(i) == 2048) return true;
+                            this->values.at(j+1).at(i) = 0;
+                            changeACell = true;
+                            break;
+                        }
+                    }
+                } while(changeACell);
+            }
             break;
         case RIGHT:
-
-            break;
-        default:
+            // Iterate over all columns.
+            for(unsigned i = 0; i < this->size; ++i) {
+                // Repeat to self-consistency:
+                // First move then add.
+                do {
+                    changeACell = false;
+                    // If cell on the right (j+1) is zero, move current cell one right.
+                    for(int j = this->size-2; j >= 0; --j) {
+                        if(this->values.at(j+1).at(i) == 0 && this->values.at(j).at(i) != 0) {
+                            this->values.at(j+1).at(i) = this->values.at(j).at(i);
+                            this->values.at(j).at(i) = 0;
+                            changeACell = true;
+                        }
+                    }
+                    // If cell on the left (j-1) is the same as the one on the right, multiply right by two and set left (j) to zero.
+                    for(unsigned j = this->size-1; j >= 1 ; --j) {
+                        if(this->values.at(j).at(i) == this->values.at(j-1).at(i) && this->values.at(j).at(i) != 0) {
+                            score += this->values.at(j).at(i);
+                            this->values.at(j).at(i) *= 2;
+                            if(this->values.at(j).at(i) == 2048) return true;
+                            this->values.at(j-1).at(i) = 0;
+                            changeACell = true;
+                            break;
+                        }
+                    }
+                } while(changeACell);
+            }
             break;
         }
-        
-        // After the move add a new random cell/value.
-        return this->addRandomValue(mt);
+        return false;
 }
 
 void board::draw()

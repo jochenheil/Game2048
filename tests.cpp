@@ -43,11 +43,7 @@ TEST(lineBoardTest, checkAddition)
 
 TEST(lineBoardTest, checkGetterSetter)
 {
-    // Initialize random number generator.
-    std::random_device rd;
-    std::mt19937 mt(rd());
-
-    board myBoard(mt,3);
+    board myBoard(3);
     myBoard.zero();
     line testCol(3,col,std::vector<unsigned>({1,2,3}));
     myBoard.setCol(testCol,2);
@@ -87,11 +83,76 @@ TEST(lineBoardTest, checkAddRandomValueReturn)
     std::mt19937 mt(rd());
     
     // Check if the game stops after adding one number too many...
-    board myBoard(mt,2);
+    board myBoard(2);
+    myBoard.addRandomValue(mt);
     myBoard.addRandomValue(mt);
     myBoard.addRandomValue(mt);
     myBoard.addRandomValue(mt);
     bool testval = myBoard.addRandomValue(mt);
     EXPECT_EQ(testval,false);
+}
+
+TEST(lineBoardTest, checkMoveLeft) 
+{
+    // Make new board.
+    unsigned score = 0;
+    board myBoard(4);
+    
+    myBoard.zero();
+    myBoard.values.at(1).at(3) = 4;
+    myBoard.values.at(2).at(3) = 4;
+    myBoard.values.at(3).at(3) = 4;
+    bool gameOver = myBoard.move(LEFT,score);
+    EXPECT_EQ(myBoard.values.at(0).at(3),8);
+    EXPECT_EQ(myBoard.values.at(1).at(3),4);
+    EXPECT_EQ(gameOver,false);
+}
+
+TEST(lineBoardTest, checkMoveRight) 
+{
+    // Make new board.
+    unsigned score = 0;
+    board myBoard(4);
+    
+    myBoard.zero();
+    myBoard.values.at(0).at(3) = 4;
+    myBoard.values.at(1).at(3) = 4;
+    myBoard.values.at(2).at(3) = 4;
+    bool gameOver = myBoard.move(RIGHT,score);
+    EXPECT_EQ(myBoard.values.at(3).at(3),8);
+    EXPECT_EQ(myBoard.values.at(2).at(3),4);
+    EXPECT_EQ(gameOver,false);
+}
+
+TEST(lineBoardTest, checkMoveUp) 
+{
+    // Make new board.
+    unsigned score = 0;
+    board myBoard(4);
+    
+    myBoard.zero();
+    myBoard.values.at(3).at(1) = 4;
+    myBoard.values.at(3).at(2) = 4;
+    myBoard.values.at(3).at(3) = 4;
+    bool gameOver = myBoard.move(UP,score);
+    EXPECT_EQ(myBoard.values.at(3).at(0),8);
+    EXPECT_EQ(myBoard.values.at(3).at(1),4);
+    EXPECT_EQ(gameOver,false);
+}
+
+TEST(lineBoardTest, checkMoveDown) 
+{
+    // Make new board.
+    unsigned score = 0;
+    board myBoard(4);
+    
+    myBoard.zero();
+    myBoard.values.at(3).at(0) = 4;
+    myBoard.values.at(3).at(1) = 4;
+    myBoard.values.at(3).at(2) = 4;
+    bool gameOver = myBoard.move(DOWN,score);
+    EXPECT_EQ(myBoard.values.at(3).at(3),8);
+    EXPECT_EQ(myBoard.values.at(3).at(2),4);
+    EXPECT_EQ(gameOver,false);
 }
 

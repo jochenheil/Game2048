@@ -57,9 +57,11 @@ enum { row = true, col = false };
 class board
 {
 private:
+//     unsigned size; /*!< The number of rows and columns. */
+//     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
+public:
     unsigned size; /*!< The number of rows and columns. */
     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
-public:
     /*! \brief Draw the board.
      * 
      *  Draw the board to STDOUT.
@@ -90,21 +92,19 @@ public:
      * 
      * \param direction The direction in which to move the cells.
      * \param score The score that needs updating.
-     * \param mt The Mersenne-Twister random number generator.
-     * \return Whether there was still space to add the new value, i.e. if the game is over (false).
+     * \return Whether the result 2048 was reached during this move, i.e. if the game is over (true).
      * 
      */
-    bool move(const char direction,unsigned& score,std::mt19937& mt);
+    bool move(const char direction, unsigned int& score);
     
     /*! \brief Make a new board.
      * 
      *  Constructor for a board of a certain size.
      * 
      * \param size The number of rows and columns on the board.
-     * \param mt The Mersenne-Twister random number generator.
      * 
      */
-    board(std::mt19937& mt,const unsigned size);
+    board(const unsigned int size);
     
     ~board(); /*!< Destructor that deletes the board object. */
     
