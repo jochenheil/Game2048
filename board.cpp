@@ -50,7 +50,6 @@ board::~board()
 
 void board::zero()
 {
-    // Set all cells to 0.
     for(unsigned i = 0; i < this->size; ++i) {
         this->values.at(i).resize(this->size);
         for(unsigned j = 0; j < this->size; ++j) {
@@ -105,7 +104,6 @@ bool board::move(const char direction,unsigned& score)
     bool changeACell;
     switch(direction){
         case UP:
-            std::cout << "UP!" << std::endl;
             // Iterate over all rows.
             for(unsigned i = 0; i < this->size; ++i) {
                 // Repeat to self-consistency:
@@ -114,19 +112,19 @@ bool board::move(const char direction,unsigned& score)
                     changeACell = false;
                     // If cell on the left (j-1) is zero, move current cell one left.
                     for(unsigned j = 1; j < this->size; ++j) {
-                        if(this->values.at(i).at(j-1) == 0 && this->values.at(i).at(j) != 0) {
-                            this->values.at(i).at(j-1) = this->values.at(i).at(j);
-                            this->values.at(i).at(j) = 0;
+                        if((*this)(i,j-1) == 0 && (*this)(i,j) != 0) {
+                            (*this)(i,j-1) = (*this)(i,j);
+                            (*this)(i,j) = 0;
                             changeACell = true;
                         }
                     }
                     // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
                     for(unsigned j = 0; j < this->size-1; ++j) {
-                        if(this->values.at(i).at(j) == this->values.at(i).at(j+1) && this->values.at(i).at(j) != 0) {
-                            score += this->values.at(i).at(j);
-                            this->values.at(i).at(j) *= 2;
-                            if(this->values.at(i).at(j) == 2048) return true;
-                            this->values.at(i).at(j+1) = 0;
+                        if((*this)(i,j) == (*this)(i,j+1) && (*this)(i,j) != 0) {
+                            score += (*this)(i,j);
+                            (*this)(i,j) *= 2;
+                            if((*this)(i,j) == 2048) return true;
+                            (*this)(i,j+1) = 0;
                             changeACell = true;
                             break;
                         }
@@ -143,19 +141,19 @@ bool board::move(const char direction,unsigned& score)
                     changeACell = false;
                     // If cell on the left (j-1) is zero, move current cell one left.
                     for(int j = this->size-2; j >= 0; --j) {
-                        if(this->values.at(i).at(j+1) == 0 && this->values.at(i).at(j) != 0) {
-                            this->values.at(i).at(j+1) = this->values.at(i).at(j);
-                            this->values.at(i).at(j) = 0;
+                        if((*this)(i,j+1) == 0 && (*this)(i,j) != 0) {
+                            (*this)(i,j+1) = (*this)(i,j);
+                            (*this)(i,j) = 0;
                             changeACell = true;
                         }
                     }
                     // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
                     for(unsigned j = this->size-1; j >= 1 ; --j) {
-                        if(this->values.at(i).at(j) == this->values.at(i).at(j-1) && this->values.at(i).at(j) != 0) {
-                            score += this->values.at(i).at(j);
-                            this->values.at(i).at(j) *= 2;
-                            if(this->values.at(i).at(j) == 2048) return true;
-                            this->values.at(i).at(j-1) = 0;
+                        if((*this)(i,j) == (*this)(i,j-1) && (*this)(i,j) != 0) {
+                            score += (*this)(i,j);
+                            (*this)(i,j) *= 2;
+                            if((*this)(i,j) == 2048) return true;
+                            (*this)(i,j-1) = 0;
                             changeACell = true;
                             break;
                         }
@@ -172,19 +170,19 @@ bool board::move(const char direction,unsigned& score)
                     changeACell = false;
                     // If cell on the left (j-1) is zero, move current cell one left.
                     for(unsigned j = 1; j < this->size; ++j) {
-                        if(this->values.at(j-1).at(i) == 0 && this->values.at(j).at(i) != 0) {
-                            this->values.at(j-1).at(i) = this->values.at(j).at(i);
-                            this->values.at(j).at(i) = 0;
+                        if((*this)(j-1,i) == 0 && (*this)(j,i) != 0) {
+                            (*this)(j-1,i) = (*this)(j,i);
+                            (*this)(j,i) = 0;
                             changeACell = true;
                         }
                     }
                     // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
                     for(unsigned j = 0; j < this->size-1; ++j) {
-                        if(this->values.at(j).at(i) == this->values.at(j+1).at(i) && this->values.at(j).at(i) != 0) {
-                            score += this->values.at(j).at(i);
-                            this->values.at(j).at(i) *= 2;
-                            if(this->values.at(j).at(i) == 2048) return true;
-                            this->values.at(j+1).at(i) = 0;
+                        if((*this)(j,i) == (*this)(j+1,i) && (*this)(j,i) != 0) {
+                            score += (*this)(j,i);
+                            (*this)(j,i) *= 2;
+                            if((*this)(j,i) == 2048) return true;
+                            (*this)(j+1,i) = 0;
                             changeACell = true;
                             break;
                         }
@@ -201,19 +199,19 @@ bool board::move(const char direction,unsigned& score)
                     changeACell = false;
                     // If cell on the right (j+1) is zero, move current cell one right.
                     for(int j = this->size-2; j >= 0; --j) {
-                        if(this->values.at(j+1).at(i) == 0 && this->values.at(j).at(i) != 0) {
-                            this->values.at(j+1).at(i) = this->values.at(j).at(i);
-                            this->values.at(j).at(i) = 0;
+                        if((*this)(j+1,i) == 0 && (*this)(j,i) != 0) {
+                            (*this)(j+1,i) = (*this)(j,i);
+                            (*this)(j,i) = 0;
                             changeACell = true;
                         }
                     }
                     // If cell on the left (j-1) is the same as the one on the right, multiply right by two and set left (j) to zero.
                     for(unsigned j = this->size-1; j >= 1 ; --j) {
-                        if(this->values.at(j).at(i) == this->values.at(j-1).at(i) && this->values.at(j).at(i) != 0) {
-                            score += this->values.at(j).at(i);
-                            this->values.at(j).at(i) *= 2;
-                            if(this->values.at(j).at(i) == 2048) return true;
-                            this->values.at(j-1).at(i) = 0;
+                        if((*this)(j,i) == (*this)(j-1,i) && (*this)(j,i) != 0) {
+                            score += (*this)(j,i);
+                            (*this)(j,i) *= 2;
+                            if((*this)(j,i) == 2048) return true;
+                            (*this)(j-1,i) = 0;
                             changeACell = true;
                             break;
                         }
@@ -241,8 +239,8 @@ void board::draw()
             for(unsigned i = 0; i < this->size; ++i) {
                 std::cout << "|";
 
-                // If the value of cell i,j is zero do not print the number
-                if(this->values.at(i).at(k) != 0 && j == 1) std::cout << centerNumberstring(4,this->values.at(i).at(k)); else std::cout <<  "    ";
+                // If the value of cell i,j is zero do not print the number.
+                if((*this)(i,k) != 0 && j == 1) std::cout << centerNumberstring(4,(*this)(i,k)); else std::cout <<  "    ";
                 std::cout <<  "|";
             }
             std::cout << std::endl;
@@ -252,112 +250,4 @@ void board::draw()
         std::cout << "======";
     }
     std::cout << std::endl;
-}
-
-line board::getCol(const unsigned colNum) const
-{
-    // Check if the number of columns/cells is valid.
-    assert(colNum < this->size);
-    
-    std::vector<unsigned> newColValues(this->size);
-    unsigned count = 0;
-    for(unsigned & elem : newColValues) {
-        elem = this->values.at(colNum).at(count);
-        count++;
-    }
-    line newCol(this->size,row,newColValues);
-    return newCol;
-}
-
-line board::getRow(const unsigned rowNum) const
-{
-    // Check if the number of rows/cells is valid.
-    assert(rowNum < this->size);
-    
-    std::vector<unsigned> newRowValues(this->size);
-    unsigned count = 0;
-    for(unsigned & elem : newRowValues) {
-        elem = this->values.at(count).at(rowNum);
-        count++;
-    }
-    line newRow(this->size,row,newRowValues);
-    return newRow;
-}
-
-void board::setCol(const line& colToSet, const unsigned int colNum)
-{
-    // Check if the line to write to the board is really a column with the correct number of cells.
-    assert(colNum < this->size);
-    assert(colToSet.rowOrCol == col);
-
-    for(unsigned i = 0; i < this->size; ++i) this->values.at(i).at(colNum) = colToSet.values.at(i);
-}
-
-void board::setRow(const line& rowToSet, const unsigned int rowNum)
-{
-    // Check if the line to write to the board is really a row with the correct number of cells.
-    assert(rowNum < this->size);
-    assert(rowToSet.rowOrCol == row);
-
-    for(unsigned i = 0; i < this->size; ++i) this->values.at(rowNum).at(i) = rowToSet.values.at(i);
-}
-
-line::line(const unsigned& size, const bool& rowOrCol, const std::vector<unsigned>& values)
-{
-    this->size = size;
-    this->rowOrCol = rowOrCol;
-    this->values.resize(this->size);
-    this->values = values;
-}
-
-unsigned line::getValue(const unsigned num)
-{
-    if(num < this->size) {
-        return this->values.at(num);
-    }
-    else {
-        std::cerr << "Internal error: Trying to get a line element from ouside boundarys, abort!" << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
-}
-
-bool line::isCol()
-{
-    if(this->rowOrCol == col) return true; else return false;
-}
-
-bool line::isRow()
-{
-    if(this->rowOrCol == row) return true; else return false;
-}
-
-line line::operator+(const line& right)
-{
-    assert(this->rowOrCol == right.rowOrCol);
-    assert(this->values.size() == right.values.size());
-    assert(this->size == right.size);
-    std::vector<unsigned> resultValues(this->size);
-    unsigned count = 0;
-    for(unsigned & elem : resultValues) {
-        elem = this->values.at(count) + right.values.at(count);
-        count++;
-    }
-    line result(this->size,this->rowOrCol,resultValues);
-    for(unsigned i = 0; i < this->size; ++i) result.values.at(i) = this->values.at(i) + right.values.at(i);
-    return result;
-}
-
-line& line::operator=(const line& right)
-{
-    assert(this->rowOrCol == right.rowOrCol);
-    assert(this->values.size() == right.values.size());
-    assert(this->size == right.size);
-    this->size = right.size;
-    this->values = right.values;
-    return *this;
-}
-
-line::~line()
-{
-
 }

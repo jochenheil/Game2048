@@ -29,53 +29,6 @@
 #include "board.h"
 #include <gtest/gtest.h>
 
-TEST(lineBoardTest, checkAddition)
-{
-    std::vector<unsigned> values1 = {2,3,4};
-    std::vector<unsigned> values2 = {4,1,0};
-    line line1(3,row,values1);
-    line line2(3,row,values2);
-    line line3 = line1 + line2;
-    EXPECT_EQ(line3.getValue(0), 6);
-    EXPECT_EQ(line3.getValue(1), 4);
-    EXPECT_EQ(line3.getValue(2), 4);
-}
-
-TEST(lineBoardTest, checkGetterSetter)
-{
-    board myBoard(3);
-    myBoard.zero();
-    line testCol(3,col,std::vector<unsigned>({1,2,3}));
-    myBoard.setCol(testCol,2);
-    line testRow(3,row,std::vector<unsigned>({16,15,14}));
-    myBoard.setRow(testRow,0);
-    line line1 = myBoard.getRow(0);
-    line line2 = myBoard.getRow(1);
-    line line3 = myBoard.getRow(2);
-    line line4 = myBoard.getCol(0);
-    line line5 = myBoard.getCol(1);
-    line line6 = myBoard.getCol(2);
-    EXPECT_EQ(line1.getValue(0),16);
-    EXPECT_EQ(line1.getValue(1),0);
-    EXPECT_EQ(line1.getValue(2),0);
-    EXPECT_EQ(line2.getValue(0),15);
-    EXPECT_EQ(line2.getValue(1),0);
-    EXPECT_EQ(line2.getValue(2),0);
-    EXPECT_EQ(line3.getValue(0),14);
-    EXPECT_EQ(line3.getValue(1),2);
-    EXPECT_EQ(line3.getValue(2),3);
-
-    EXPECT_EQ(line4.getValue(0),16);
-    EXPECT_EQ(line4.getValue(1),15);
-    EXPECT_EQ(line4.getValue(2),14);
-    EXPECT_EQ(line5.getValue(0),0);
-    EXPECT_EQ(line5.getValue(1),0);
-    EXPECT_EQ(line5.getValue(2),2);
-    EXPECT_EQ(line6.getValue(0),0);
-    EXPECT_EQ(line6.getValue(1),0);
-    EXPECT_EQ(line6.getValue(2),3);
-}
-
 TEST(lineBoardTest, checkAddRandomValueReturn)
 {
     // Initialize random number generator.
@@ -97,14 +50,15 @@ TEST(lineBoardTest, checkMoveLeft)
     // Make new board.
     unsigned score = 0;
     board myBoard(4);
-    
+
+    // Test left move.
     myBoard.zero();
-    myBoard.values.at(1).at(3) = 4;
-    myBoard.values.at(2).at(3) = 4;
-    myBoard.values.at(3).at(3) = 4;
+    myBoard(1,3) = 4;
+    myBoard(2,3) = 4;
+    myBoard(3,3) = 4;
     bool gameOver = myBoard.move(LEFT,score);
-    EXPECT_EQ(myBoard.values.at(0).at(3),8);
-    EXPECT_EQ(myBoard.values.at(1).at(3),4);
+    EXPECT_EQ(myBoard(0,3),8);
+    EXPECT_EQ(myBoard(1,3),4);
     EXPECT_EQ(gameOver,false);
 }
 
@@ -114,13 +68,14 @@ TEST(lineBoardTest, checkMoveRight)
     unsigned score = 0;
     board myBoard(4);
     
+    // Test right move.
     myBoard.zero();
-    myBoard.values.at(0).at(3) = 4;
-    myBoard.values.at(1).at(3) = 4;
-    myBoard.values.at(2).at(3) = 4;
+    myBoard(0,3) = 4;
+    myBoard(1,3) = 4;
+    myBoard(2,3) = 4;
     bool gameOver = myBoard.move(RIGHT,score);
-    EXPECT_EQ(myBoard.values.at(3).at(3),8);
-    EXPECT_EQ(myBoard.values.at(2).at(3),4);
+    EXPECT_EQ(myBoard(3,3),8);
+    EXPECT_EQ(myBoard(2,3),4);
     EXPECT_EQ(gameOver,false);
 }
 
@@ -130,13 +85,14 @@ TEST(lineBoardTest, checkMoveUp)
     unsigned score = 0;
     board myBoard(4);
     
+    // Test up move.
     myBoard.zero();
-    myBoard.values.at(3).at(1) = 4;
-    myBoard.values.at(3).at(2) = 4;
-    myBoard.values.at(3).at(3) = 4;
+    myBoard(3,1) = 4;
+    myBoard(3,2) = 4;
+    myBoard(3,3) = 4;
     bool gameOver = myBoard.move(UP,score);
-    EXPECT_EQ(myBoard.values.at(3).at(0),8);
-    EXPECT_EQ(myBoard.values.at(3).at(1),4);
+    EXPECT_EQ(myBoard(3,0),8);
+    EXPECT_EQ(myBoard(3,1),4);
     EXPECT_EQ(gameOver,false);
 }
 
@@ -146,13 +102,14 @@ TEST(lineBoardTest, checkMoveDown)
     unsigned score = 0;
     board myBoard(4);
     
+    // Test down move.
     myBoard.zero();
-    myBoard.values.at(3).at(0) = 4;
-    myBoard.values.at(3).at(1) = 4;
-    myBoard.values.at(3).at(2) = 4;
+    myBoard(3,0) = 4;
+    myBoard(3,1) = 4;
+    myBoard(3,2) = 4;
     bool gameOver = myBoard.move(DOWN,score);
-    EXPECT_EQ(myBoard.values.at(3).at(3),8);
-    EXPECT_EQ(myBoard.values.at(3).at(2),4);
+    EXPECT_EQ(myBoard(3,3),8);
+    EXPECT_EQ(myBoard(3,2),4);
     EXPECT_EQ(gameOver,false);
 }
 

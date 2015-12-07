@@ -57,11 +57,9 @@ enum { row = true, col = false };
 class board
 {
 private:
-//     unsigned size; /*!< The number of rows and columns. */
-//     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
-public:
     unsigned size; /*!< The number of rows and columns. */
     std::vector< std::vector<unsigned> > values; /*!< Values of all cells on the Board. First index: rows, second index: columns. */
+public:
     /*! \brief Draw the board.
      * 
      *  Draw the board to STDOUT.
@@ -81,7 +79,7 @@ public:
      *  Add 2 or 4 to some random empty cell.
      * 
      * \param mt The Mersenne-Twister random number generator.
-     * \return Whether there was still space to add the new value.
+     * \return Whether there was still space to add the new value, i.e. if the game is over (false).
      * 
      */
     bool addRandomValue(std::mt19937& mt);
@@ -108,42 +106,6 @@ public:
     
     ~board(); /*!< Destructor that deletes the board object. */
     
-    /*! \brief Get a row.
-     * 
-     *  Get a row from a position on the board.
-     * 
-     *  \param rowNum The position of the row that should be returned.
-     *  \return A line object representing the row.
-     */
-    line getRow(const unsigned rowNum) const;
-    
-    /*! \brief Get a column.
-     * 
-     *  Get a column from a position on the board.
-     * 
-     *  \param colNum The position of the column that should be returned.
-     *  \return A line object representing the column.
-     */
-    line getCol(const unsigned colNum) const; /*!< Get a single column from the board. */
-    
-    /*! \brief Set a row.
-     * 
-     *  Set a row on a position on the board.
-     * 
-     *  \param rowToSet The line object with the cells that should be written to the board.
-     *  \param rowNum The position of the row that should be returned.
-     */
-    void setRow(const line & rowToSet,const unsigned rowNum);
-    
-    /*! \brief Set a column.
-     * 
-     *  Set a column on a position on the board.
-     * 
-     *  \param colToSet The line object with the cells that should be written to the board.
-     *  \param colNum The position of the column that should be returned.
-     */
-    void setCol(const line & colToSet,const unsigned colNum);
-
     /*! \brief Get coordinates of empty cells.
      * 
      *  Find all empty cells and return their x,y-indices as std::tuple<unsigned,unsigned>.
@@ -151,65 +113,21 @@ public:
      * 
      */    
     std::vector<std::tuple<unsigned,unsigned> > getEmptyCells();
-};
-
-/*! \brief A line of cells on the 2048 board.
- *
- *  This is the board on which 2048 is played and on which all game actions
- *  take place.
- */
-class line
-{
-    friend class board;
-private:
-    unsigned size; /*!< The number of cells in the line. */
-    bool rowOrCol; /*!< Whether the line is a row or a column. Row is true, column is false. */
-    std::vector<unsigned> values; /*!< The values in the line */
-public:
- 
-    /*! \brief Constructor for line.
+    
+    /*! \brief Overloaded function call operator for matrix element access.
      * 
-     *  Create a line (i.e. a row or a column) with a certain number of elements with predefined values.
-     *
-     *  \param size Target width of the string.
-     *  \param rowOrCol Whether the line is a row or a column. Row is true, column is false.
-     *  \param values The values of the cells in the line.
-     */
-    line(const unsigned & size,const bool & rowOrCol,const std::vector<unsigned> & values);
-
-    /*! \brief Set one line equal to another.
+     *  Overloaded function call operator for matrix element access allows simple idiomatic
+     *  access to board matrix elements via (*this)(X,Y) in member function and [board instance](X,Y)
+     *  otherwise.
      * 
-     *  \param right The line on the right side of the "+" sign.
-     *  \return The address of the new line.
-     */
-    line& operator = (const line& right);
-
-    line operator+(const line& right); /*!< Add two lines. Beware: Does not commute! */
-
-    /*! \brief Check whether a line is a row.
+     *  \param row The number of the row (X) to access.
+     *  \param col The number of the column (Y) to access.
+     *  \return The address of a board matrix element.
      * 
-     *  \return True if it is a row, false otherwise.
-     */
-    bool isRow();
-
-    /*! \brief Check whether a line is a column.
-     * 
-     *  \return True if it is a column, false otherwise.
-     */
-    bool isCol();
-
-    /*! \brief Get a value on the line.
-     * 
-     *  Get the value of the cell at position num in the line.
-     *
-     *  \param num The position of the cell whose value should be returned.
-     *  \return The values of the cell.
-     */
-    unsigned getValue(const unsigned num); /*!< Get value of cell number num starting from below/left. */
-
-    void print(); /*!< Print line to STDOUT (for debugging). */
-
-    ~line(); /*!< Destructor for line. */
+     */    
+    unsigned& operator()(const unsigned row,const unsigned col) {
+        return this->values.at(row).at(col);
+    };
 };
 
 #endif // BOARD_H
