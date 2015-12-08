@@ -37,11 +37,24 @@
 #include <random>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
+
+/*! \brief Different game situations.
+ * 
+ */
+enum gameState_t { UNFINISHED, WIN, LOOSE, INVALID };
 
 /*! \brief Idiomatic directions/keys.
  * 
  */
 enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'd', QUIT = 'q' };
+
+/*! \brief Print gameover message.
+ * 
+ * \param moveState The state of the game.
+ * \param score The current score.
+ */
+void printGameoverMessage(gameState_t moveState,unsigned score);
 
 /*! \brief Combine numbers according to game rules.
  * 
@@ -50,10 +63,12 @@ enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'd', QUIT = 'q' };
  *  of the current move.
  *
  * \param direction The direction in which to move the cells.
- * \param nonZeroElements all non-zero numbers in the line the vector represents.
+ * \param nonZeroElements All non-zero numbers in the line the vector represents.
+ * \param score The present score.
+ * \return Whether at least one cell pair was merged.
  * 
  */
-void combineCells(const char direction,std::vector<unsigned>& nonZeroElements);
+bool combineCells(const char direction,std::vector<unsigned>& nonZeroElements,unsigned& score);
 
 /*! \brief Generate a new cell value for 2048.
  * 

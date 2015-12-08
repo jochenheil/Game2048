@@ -32,7 +32,26 @@
 
 #include "helper.h"
 
-void combineCells(const char direction,std::vector<unsigned>& nonZeroElements) {
+void printGameoverMessage(gameState_t moveState,unsigned score) {
+    std::cout << "!!!   Game over  !!!" << std::endl;
+    switch(moveState) {
+        case WIN:
+            // Gameover condition 1: 2048 appears on the screen.
+            std::cout << "!!! 2048 REACHED !!!" << std::endl;
+            break;
+        case LOOSE:
+            // Gameover condition 2: All cells occupied.
+            std::cout << "!!! NO SPACE  !!!" << std::endl;
+            break;
+        default:
+            break;
+    }
+    std::cout << "Score: " << score << std::endl;
+}
+
+bool combineCells(const char direction,std::vector<unsigned>& nonZeroElements,unsigned& score) {
+
+    bool cellsMerged = false;
 
     // If DOWN/RIGHT-move swap direction.
     if(direction == DOWN || direction == RIGHT) std::reverse(nonZeroElements.begin(), nonZeroElements.end());
@@ -42,9 +61,14 @@ void combineCells(const char direction,std::vector<unsigned>& nonZeroElements) {
         if(nonZeroElements.at(j) == nonZeroElements.at(j+1)) {
             nonZeroElements.at(j) = 0;
             nonZeroElements.at(j+1) *= 2;
+            cellsMerged = true;
+            
+            // Update score.
+            score += nonZeroElements.at(j+1);
             
             // If element j and j+1 are swapped skip element j+1.
             j++;
+            
         }
     }
 
@@ -54,6 +78,8 @@ void combineCells(const char direction,std::vector<unsigned>& nonZeroElements) {
     // Remove zeros.
     auto endIter = std::remove_if(nonZeroElements.begin(), nonZeroElements.end(), [](unsigned & elem) { if(elem == 0) return true; else return false;});
     nonZeroElements.erase(endIter, nonZeroElements.end());
+    
+    return cellsMerged;
 }
 
 unsigned generateCellValue(std::mt19937& mt)

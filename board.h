@@ -90,10 +90,10 @@ public:
      * 
      * \param direction The direction in which to move the cells.
      * \param score The score that needs updating.
-     * \return Whether the result 2048 was reached during this move, i.e. if the game is over (true).
+     * \return The state of the game.
      * 
      */
-    bool move(const char direction, unsigned int& score);
+    gameState_t move(const char direction,unsigned& score);
     
     /*! \brief Make a new board.
      * 
@@ -113,7 +113,33 @@ public:
      * 
      */    
     std::vector<std::tuple<unsigned,unsigned> > getEmptyCells();
+
+    /*! \brief Fill a line on the board in a given direction.
+     * 
+     *  Fill a line on the board in a given direction. For testing/debuuging.
+     *  \param direction The direction in which to fill in the values.
+     *  \param fillVector The values to write to the board.
+     *  \param lineNumber The index of the row/column to write.
+     * 
+     */    
+    void fillLine(const char direction, const std::vector<unsigned> fillVector, const unsigned lineNumber);
+
+    /*! \brief Set board values.
+     * 
+     *  Used to set the board values. For testing/debuuging.
+     * 
+     *  \param newValues The new board values.
+     */    
+    void setBoardValues(const std::vector< std::vector<unsigned> > newValues);
     
+    /*! \brief Get board values.
+     * 
+     *  Used to get the board values. For testing/debuuging.
+     * 
+     *  \return The current board values.
+     */    
+    std::vector<std::vector<unsigned> > getBoardValues();
+
     /*! \brief Overloaded function call operator for matrix element access.
      * 
      *  Overloaded function call operator for matrix element access allows simple idiomatic

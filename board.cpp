@@ -53,7 +53,7 @@ void board::zero()
     for(unsigned i = 0; i < this->size; ++i) {
         this->values.at(i).resize(this->size);
         for(unsigned j = 0; j < this->size; ++j) {
-            this->values.at(i).at(j) = 0;
+            (*this)(i,j) = 0;
         }
     }
 }
@@ -63,7 +63,7 @@ std::vector< std::tuple<unsigned,unsigned> > board::getEmptyCells()
     std::vector<std::tuple<unsigned,unsigned> > emptyCells;
     for(unsigned i = 0; i < this->size; ++i) {
         for(unsigned j = 0; j < this->size; ++j) {
-            if(this->values.at(i).at(j) == 0) emptyCells.push_back(std::tuple<unsigned,unsigned>(i,j));
+            if((*this)(i,j) == 0) emptyCells.push_back(std::tuple<unsigned,unsigned>(i,j));
         }
     }
     return emptyCells;
@@ -99,12 +99,25 @@ bool board::addRandomValue(std::mt19937& mt)
     }
 }
 
-bool board::move(const char direction,unsigned& score) {
+gameState_t board::move(const char direction,unsigned& score) {
     
     std::vector<unsigned> nonZeroElements;
     unsigned nZeroElements;
     unsigned nNonZeroElements;
-
+    bool isValidMove = false;
+    
+    // Check whether there is still space left on the board.
+    bool spaceLeft = false;
+    for(unsigned i = 0; i < this->size; i++) {
+        for(unsigned j = 0; j < this->size; j++) {
+            if((*this)(i,j) == 0) spaceLeft = true;
+        }
+    }
+    // If no space left on the board, you loose.
+    if(!spaceLeft) { 
+        return LOOSE;
+    }
+    
     for(unsigned i = 0; i < this->size; ++i) {
 
         // Get all cell values in line i according to the move direction.
@@ -119,54 +132,107 @@ bool board::move(const char direction,unsigned& score) {
         // If the line is not empty...
         if(nonZeroElements.size() > 0) {
 
-            // ...combine values according to game rule and remove zero values and...
-            combineCells(direction,nonZeroElements);
+            // ...combine values according to game rule and remove zero values, check if at least one was merged, and...
+            if(combineCells(direction,nonZeroElements,score)) isValidMove = true;
 
             // ...check victory condition and...
-            for(const unsigned elem : nonZeroElements) if(elem == 2048) return true;
+            for(const unsigned elem : nonZeroElements) {
+                if(elem == 2048) return WIN;
+            }
 
-            // ...assign new values to first few cells and set the rest of the line to zero
+            // ...assign new values to first few cells and set the rest of the line to zero.
+            // Check if anything changes and set isValidMove to true if it does.
             switch(direction){
                 case UP:
                     
                     // Write all non-zero elements at the upper part of the line.
-                    for(unsigned j = 0; j < nonZeroElements.size(); ++j) (*this)(i,j) = nonZeroElements.at(j);
+                    for(unsigned j = 0; j < nonZeroElements.size(); ++j) {
+                        if((*this)(i,j) != nonZeroElements.at(j)) isValidMove = true;
+                        (*this)(i,j) = nonZeroElements.at(j);
+                    }
                     
                     // Write all zero elements at the lower part of the line.
-                    for(unsigned j = nonZeroElements.size(); j < this->size; ++j) (*this)(i,j) = 0;
+                    for(unsigned j = nonZeroElements.size(); j < this->size; ++j) {
+                        if((*this)(i,j) != 0) isValidMove = true;
+                        (*this)(i,j) = 0;
+                    }
                     break;
                 case DOWN:
                     
                     // Write all zero elements at the upper part of the line.
                     nZeroElements = this->size - nonZeroElements.size();
                     nNonZeroElements = this->size - nZeroElements;
-                    for(unsigned j = 0; j < nZeroElements; ++j) (*this)(i,j) = 0;
+                    for(unsigned j = 0; j < nZeroElements; ++j) {
+                        if((*this)(i,j) != 0) isValidMove = true;
+                        (*this)(i,j) = 0;
+                    }
 
                     // Write all non-zero elements at the lower part of the line.
-                    for(unsigned j = 0; j < nNonZeroElements; ++j) (*this)(i,j+nZeroElements) = nonZeroElements.at(j);
+                    for(unsigned j = 0; j < nNonZeroElements; ++j) {
+                        if((*this)(i,j+nZeroElements) != nonZeroElements.at(j)) isValidMove = true;
+                        (*this)(i,j+nZeroElements) = nonZeroElements.at(j);
+                    }
                     break;
                 case LEFT:
                     
                     // Write all non-zero elements at the left part of the line.
-                    for(unsigned j = 0; j < nonZeroElements.size(); ++j) (*this)(j,i) = nonZeroElements.at(j);
+                    for(unsigned j = 0; j < nonZeroElements.size(); ++j) {
+                        if((*this)(j,i) != nonZeroElements.at(j)) isValidMove = true;
+                        (*this)(j,i) = nonZeroElements.at(j);
+                    }
                     
                     // Write all zero elements at the right part of the line.
-                    for(unsigned j = nonZeroElements.size(); j < this->size; ++j) (*this)(j,i) = 0;
+                    for(unsigned j = nonZeroElements.size(); j < this->size; ++j) {
+                        if((*this)(j,i) != 0) isValidMove = true;
+                        (*this)(j,i) = 0;
+                    }
                     break;
                 case RIGHT:
                     
                     // Write all zero elements at the left part of the line.
                     nZeroElements = this->size - nonZeroElements.size();
                     nNonZeroElements = this->size - nZeroElements;
-                    for(unsigned j = 0; j < nZeroElements; ++j) (*this)(j,i) = 0;
+                    for(unsigned j = 0; j < nZeroElements; ++j) {
+                        if((*this)(j,i) != 0) isValidMove = true;
+                        (*this)(j,i) = 0;
+                    }
                     
                     // Write all non-zero elements at the right part of the line.
-                    for(unsigned j = 0; j < nNonZeroElements; ++j) (*this)(j+nZeroElements,i) = nonZeroElements.at(j);
+                    for(unsigned j = 0; j < nNonZeroElements; ++j) {
+                        if((*this)(j+nZeroElements,i) != nonZeroElements.at(j)) isValidMove = true;
+                        (*this)(j+nZeroElements,i) = nonZeroElements.at(j);
+                    }
                     break;
             }
         }
     }
-    return false;
+    if(isValidMove) {
+        return UNFINISHED;
+    }
+    else {
+        return INVALID;
+    }
+}
+
+void board::fillLine(const char direction,std::vector<unsigned> fillVector, const unsigned lineNumber)
+{
+    assert(fillVector.size() == this->size);
+    switch(direction) {
+        case UP:
+            for(unsigned i = 0; i < this->size; ++i) (*this)(lineNumber,i) = fillVector.at(i);
+            break;
+        case DOWN:
+            std::reverse(fillVector.begin(), fillVector.end());
+            for(unsigned i = 0; i < this->size; ++i) (*this)(lineNumber,i) = fillVector.at(i);
+            break;
+        case LEFT:
+            for(unsigned i = 0; i < this->size; ++i) (*this)(i,lineNumber) = fillVector.at(i);
+            break;
+        case RIGHT:
+            std::reverse(fillVector.begin(), fillVector.end());
+            for(unsigned i = 0; i < this->size; ++i) (*this)(i,lineNumber) = fillVector.at(i);
+            break;
+    }
 }
 
 void board::draw()
@@ -196,4 +262,14 @@ void board::draw()
         std::cout << "======";
     }
     std::cout << std::endl;
+}
+
+void board::setBoardValues(const std::vector< std::vector< unsigned int > > newValues)
+{
+    this->values = newValues;
+}
+
+std::vector< std::vector<unsigned> > board::getBoardValues()
+{
+    return this->values;
 }

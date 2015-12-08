@@ -50,7 +50,7 @@ unsigned getBoardSize() {
     std::string input;
     bool isValid = false;
 
-    std::cout << "How large should the board be (4)?";    
+    std::cout << "How large should the board be ( > 4, default = 4)?";    
     while(!isValid) {
         std::getline(std::cin,input);
         if(input.empty()) {
@@ -60,8 +60,8 @@ unsigned getBoardSize() {
         else {
             std::istringstream stream(input);
             stream >> boardSize;
-            if(boardSize <= 1) {
-                std::cout << "Invalid number. Please enter a positive integer > 1." << std::endl;
+            if(boardSize < 4) {
+                std::cout << "Invalid number. Please enter a positive integer >= 4." << std::endl;
                 isValid = false;
             }
             else {
@@ -83,8 +83,6 @@ unsigned getBoardSize() {
 char getActionCommandKey() {
     char actionCommandKey = ' ';
     std::string actionCommandKeyString;
-    int charCode = 0;
-    bool isValidCmdKey;
     do {
         /* 
          * I know that getchar needs the user to hit enter, but direct action
@@ -128,33 +126,28 @@ int main(int argc, char **argv) {
     myBoard.draw();
     
     // Event loop.
-    bool isFinished = false;
+    gameState_t moveState = UNFINISHED;
     char actionCommandKey;
     while(1) {
-        actionCommandKey = getActionCommandKey();
-        if(actionCommandKey == QUIT) {
+        do {
+            actionCommandKey = getActionCommandKey();
+            if(actionCommandKey == QUIT) break;
+            moveState = myBoard.move(actionCommandKey,score);
+        } while(moveState == INVALID);
+        if(actionCommandKey == QUIT) break;
+
+        // Add a new value to the board.
+        myBoard.addRandomValue(mt);
+        
+        // If gameover, print message.
+        if(moveState == WIN || moveState == LOOSE) {
+            printGameoverMessage(moveState,score);
             break;
         }
-        else {
-            if(myBoard.move(actionCommandKey,score)) {
-                // Gameover condition 1: 2048 appears on the screen.
-                std::cout << "!!! 2048 REACHED !!!" << std::endl;
-                std::cout << "!!!   Game over  !!!" << std::endl;
-                std::cout << "Score: " << score << std::endl;
-                break;
-            }
-            else {
-                if(!myBoard.addRandomValue(mt)) {
-                    // Gameover condition 2: All cells occupied.
-                    std::cout << "!!! NO SPACE  !!!" << std::endl;
-                    std::cout << "!!! Game over !!!" << std::endl;
-                    std::cout << "Score: " << score << std::endl;
-                    break;
-                }
-                myBoard.draw();
-                std::cout << "Score: " << score << std::endl;
-            }
-        }
+
+        // Not gameover, draw board.
+        myBoard.draw();
+        std::cout << "Score: " << score << std::endl;
     }
     
     return EXIT_SUCCESS;

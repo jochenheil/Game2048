@@ -10,7 +10,7 @@ option(build_doc "Build html api documentation with Doxygen" ON)
 
 # Set gcc compiler options.
 if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions(-std=c++11 -g -pedantic)
+    add_definitions(-std=c++11 -g -pedantic -Wall)
 endif()
 
 add_library(board board.cpp helper.cpp)
@@ -28,6 +28,7 @@ if(build_test)
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION tests)
 endif()
 
+# Build documentation.
 if(build_doc)
     find_package(Doxygen)
     if(NOT DOXYGEN_FOUND)
