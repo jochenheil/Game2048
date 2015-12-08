@@ -18,14 +18,17 @@ add_executable(game2048 main.cpp)
 target_link_libraries(game2048 board)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION bin)
 
-# Tests.
+# Build tests.
 if(build_test)
-  enable_testing()
-  find_package(GTest REQUIRED)
-  add_executable(runtests tests.cpp)
-  target_link_libraries(runtests gtest gtest_main board)
-  add_test(NAME testLineObject COMMAND runtests)
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION tests)
+    enable_testing()
+    find_package(GTest REQUIRED)
+    if(NOT GTEST_FOUND)
+        message(FATAL_ERROR "Google test not found, set GTEST_ROOT to the root directory of the gtest install prefix.")
+    endif()
+    add_executable(runtests tests.cpp)
+    target_link_libraries(runtests gtest gtest_main board)
+    add_test(NAME testLineObject COMMAND runtests)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION tests)
 endif()
 
 # Build documentation.

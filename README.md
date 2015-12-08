@@ -16,7 +16,7 @@ This is a simple text implementation of the game "2048".
 * make
 
 #### Cmake options:
-* -Dbuild_test=ON/OFF = Whether to build unit tests
+* -Dbuild_test=ON/OFF = Whether to build unit tests - The GTEST_ROOT environment variable should point to the location of the directory containing libgtest.a, if it is not installed in the usual system directories.
 * -Dbuild_doc=ON/OFF = Whether to build doxygen API documentation
 
 #### Build API docs:
