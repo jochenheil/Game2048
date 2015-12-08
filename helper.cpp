@@ -32,6 +32,30 @@
 
 #include "helper.h"
 
+void combineCells(const char direction,std::vector<unsigned>& nonZeroElements) {
+
+    // If DOWN/RIGHT-move swap direction.
+    if(direction == DOWN || direction == RIGHT) std::reverse(nonZeroElements.begin(), nonZeroElements.end());
+
+    // Combine values according to game rule.
+    for(unsigned j = 0; j < nonZeroElements.size()-1; ++j) {
+        if(nonZeroElements.at(j) == nonZeroElements.at(j+1)) {
+            nonZeroElements.at(j) = 0;
+            nonZeroElements.at(j+1) *= 2;
+            
+            // If element j and j+1 are swapped skip element j+1.
+            j++;
+        }
+    }
+
+    // If DOWN/RIGHT-move swap direction.
+    if(direction == DOWN || direction == RIGHT) std::reverse(nonZeroElements.begin(), nonZeroElements.end());
+    
+    // Remove zeros.
+    auto endIter = std::remove_if(nonZeroElements.begin(), nonZeroElements.end(), [](unsigned & elem) { if(elem == 0) return true; else return false;});
+    nonZeroElements.erase(endIter, nonZeroElements.end());
+}
+
 unsigned generateCellValue(std::mt19937& mt)
 {
     std::uniform_int_distribution<unsigned> startValueDist(1,10);

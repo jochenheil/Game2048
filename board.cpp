@@ -99,128 +99,74 @@ bool board::addRandomValue(std::mt19937& mt)
     }
 }
 
-bool board::move(const char direction,unsigned& score)
-{
-    bool changeACell;
-    switch(direction){
-        case UP:
-            // Iterate over all rows.
-            for(unsigned i = 0; i < this->size; ++i) {
-                // Repeat to self-consistency:
-                // First move then add.
-                do {
-                    changeACell = false;
-                    // If cell on the left (j-1) is zero, move current cell one left.
-                    for(unsigned j = 1; j < this->size; ++j) {
-                        if((*this)(i,j-1) == 0 && (*this)(i,j) != 0) {
-                            (*this)(i,j-1) = (*this)(i,j);
-                            (*this)(i,j) = 0;
-                            changeACell = true;
-                        }
-                    }
-                    // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
-                    for(unsigned j = 0; j < this->size-1; ++j) {
-                        if((*this)(i,j) == (*this)(i,j+1) && (*this)(i,j) != 0) {
-                            score += (*this)(i,j);
-                            (*this)(i,j) *= 2;
-                            if((*this)(i,j) == 2048) return true;
-                            (*this)(i,j+1) = 0;
-                            changeACell = true;
-                            break;
-                        }
-                    }
-                } while(changeACell);
-            }
-            break;
-        case DOWN:
-            // Iterate over all rows.
-            for(unsigned i = 0; i < this->size; ++i) {
-                // Repeat to self-consistency:
-                // First move then add.
-                do {
-                    changeACell = false;
-                    // If cell on the left (j-1) is zero, move current cell one left.
-                    for(int j = this->size-2; j >= 0; --j) {
-                        if((*this)(i,j+1) == 0 && (*this)(i,j) != 0) {
-                            (*this)(i,j+1) = (*this)(i,j);
-                            (*this)(i,j) = 0;
-                            changeACell = true;
-                        }
-                    }
-                    // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
-                    for(unsigned j = this->size-1; j >= 1 ; --j) {
-                        if((*this)(i,j) == (*this)(i,j-1) && (*this)(i,j) != 0) {
-                            score += (*this)(i,j);
-                            (*this)(i,j) *= 2;
-                            if((*this)(i,j) == 2048) return true;
-                            (*this)(i,j-1) = 0;
-                            changeACell = true;
-                            break;
-                        }
-                    }
-                } while(changeACell);
-            }
-            break;
-        case LEFT:
-            // Iterate over all columns.
-            for(unsigned i = 0; i < this->size; ++i) {
-                // Repeat to self-consistency:
-                // First move then add.
-                do {
-                    changeACell = false;
-                    // If cell on the left (j-1) is zero, move current cell one left.
-                    for(unsigned j = 1; j < this->size; ++j) {
-                        if((*this)(j-1,i) == 0 && (*this)(j,i) != 0) {
-                            (*this)(j-1,i) = (*this)(j,i);
-                            (*this)(j,i) = 0;
-                            changeACell = true;
-                        }
-                    }
-                    // If cell on the right (j+1) is the same as the one on the left, multiply left by two and set right (j) to zero.
-                    for(unsigned j = 0; j < this->size-1; ++j) {
-                        if((*this)(j,i) == (*this)(j+1,i) && (*this)(j,i) != 0) {
-                            score += (*this)(j,i);
-                            (*this)(j,i) *= 2;
-                            if((*this)(j,i) == 2048) return true;
-                            (*this)(j+1,i) = 0;
-                            changeACell = true;
-                            break;
-                        }
-                    }
-                } while(changeACell);
-            }
-            break;
-        case RIGHT:
-            // Iterate over all columns.
-            for(unsigned i = 0; i < this->size; ++i) {
-                // Repeat to self-consistency:
-                // First move then add.
-                do {
-                    changeACell = false;
-                    // If cell on the right (j+1) is zero, move current cell one right.
-                    for(int j = this->size-2; j >= 0; --j) {
-                        if((*this)(j+1,i) == 0 && (*this)(j,i) != 0) {
-                            (*this)(j+1,i) = (*this)(j,i);
-                            (*this)(j,i) = 0;
-                            changeACell = true;
-                        }
-                    }
-                    // If cell on the left (j-1) is the same as the one on the right, multiply right by two and set left (j) to zero.
-                    for(unsigned j = this->size-1; j >= 1 ; --j) {
-                        if((*this)(j,i) == (*this)(j-1,i) && (*this)(j,i) != 0) {
-                            score += (*this)(j,i);
-                            (*this)(j,i) *= 2;
-                            if((*this)(j,i) == 2048) return true;
-                            (*this)(j-1,i) = 0;
-                            changeACell = true;
-                            break;
-                        }
-                    }
-                } while(changeACell);
-            }
-            break;
+bool board::move(const char direction,unsigned& score) {
+    
+    std::vector<unsigned> nonZeroElements;
+    unsigned nZeroElements;
+    unsigned nNonZeroElements;
+
+    for(unsigned i = 0; i < this->size; ++i) {
+
+        // Get all cell values in line i according to the move direction.
+        nonZeroElements.clear();
+        if(direction == UP || direction == DOWN) {
+            for(unsigned j = 0; j < this->size; ++j) { if((*this)(i,j) != 0) nonZeroElements.push_back((*this)(i,j)); }
         }
-        return false;
+        else { // direction == LEFT/RIGHT
+            for(unsigned j = 0; j < this->size; ++j) { if((*this)(j,i) != 0) nonZeroElements.push_back((*this)(j,i)); }
+        }
+        
+        // If the line is not empty...
+        if(nonZeroElements.size() > 0) {
+
+            // ...combine values according to game rule and remove zero values and...
+            combineCells(direction,nonZeroElements);
+
+            // ...check victory condition and...
+            for(const unsigned elem : nonZeroElements) if(elem == 2048) return true;
+
+            // ...assign new values to first few cells and set the rest of the line to zero
+            switch(direction){
+                case UP:
+                    
+                    // Write all non-zero elements at the upper part of the line.
+                    for(unsigned j = 0; j < nonZeroElements.size(); ++j) (*this)(i,j) = nonZeroElements.at(j);
+                    
+                    // Write all zero elements at the lower part of the line.
+                    for(unsigned j = nonZeroElements.size(); j < this->size; ++j) (*this)(i,j) = 0;
+                    break;
+                case DOWN:
+                    
+                    // Write all zero elements at the upper part of the line.
+                    nZeroElements = this->size - nonZeroElements.size();
+                    nNonZeroElements = this->size - nZeroElements;
+                    for(unsigned j = 0; j < nZeroElements; ++j) (*this)(i,j) = 0;
+
+                    // Write all non-zero elements at the lower part of the line.
+                    for(unsigned j = 0; j < nNonZeroElements; ++j) (*this)(i,j+nZeroElements) = nonZeroElements.at(j);
+                    break;
+                case LEFT:
+                    
+                    // Write all non-zero elements at the left part of the line.
+                    for(unsigned j = 0; j < nonZeroElements.size(); ++j) (*this)(j,i) = nonZeroElements.at(j);
+                    
+                    // Write all zero elements at the right part of the line.
+                    for(unsigned j = nonZeroElements.size(); j < this->size; ++j) (*this)(j,i) = 0;
+                    break;
+                case RIGHT:
+                    
+                    // Write all zero elements at the left part of the line.
+                    nZeroElements = this->size - nonZeroElements.size();
+                    nNonZeroElements = this->size - nZeroElements;
+                    for(unsigned j = 0; j < nZeroElements; ++j) (*this)(j,i) = 0;
+                    
+                    // Write all non-zero elements at the right part of the line.
+                    for(unsigned j = 0; j < nNonZeroElements; ++j) (*this)(j+nZeroElements,i) = nonZeroElements.at(j);
+                    break;
+            }
+        }
+    }
+    return false;
 }
 
 void board::draw()

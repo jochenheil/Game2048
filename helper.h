@@ -43,6 +43,18 @@
  */
 enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'd', QUIT = 'q' };
 
+/*! \brief Combine numbers according to game rules.
+ * 
+ *  This function takes a vector of numbers that represents a single line of the board.
+ *  These number are then combined according to game rules, depending on the direction
+ *  of the current move.
+ *
+ * \param direction The direction in which to move the cells.
+ * \param nonZeroElements all non-zero numbers in the line the vector represents.
+ * 
+ */
+void combineCells(const char direction,std::vector<unsigned>& nonZeroElements);
+
 /*! \brief Generate a new cell value for 2048.
  * 
  *  This is used to generate a new cell value for 2048 using a

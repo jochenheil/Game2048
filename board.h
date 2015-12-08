@@ -128,6 +128,7 @@ public:
     unsigned& operator()(const unsigned row,const unsigned col) {
         return this->values.at(row).at(col);
     };
+    
 };
 
 #endif // BOARD_H
