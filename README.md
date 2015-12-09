@@ -23,7 +23,7 @@ This is a simple text implementation of the game "2048".
 * make doc
 
 #### Run tests:
-Either (native)
-* ./runtests (CTest)
+Either 
+* ./runtests (native)
 or
-* make test
+* make test (CTest)
