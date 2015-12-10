@@ -117,3 +117,49 @@ std::string centerNumberstring(const unsigned width, const unsigned inputNumber)
     assert(result.size() == width);
     return result;
 }
+
+unsigned getBoardSize() {
+    
+    int boardSize;
+    std::string input;
+    bool isValid = false;
+    
+    std::cout << "How large should the board be ( > 4, default = 4)?";    
+    while(!isValid) {
+        std::getline(std::cin,input);
+        if(input.empty()) {
+            boardSize = 4;
+            isValid = true;
+        }
+        else {
+            std::istringstream stream(input);
+            stream >> boardSize;
+            if(boardSize < 4) {
+                std::cout << "Invalid number. Please enter a positive integer >= 4." << std::endl;
+                isValid = false;
+            }
+            else {
+                std::cout << "Using a board of size " << boardSize << "." << std::endl;
+                isValid = true;
+            }
+        }
+    }
+    return unsigned(boardSize);
+}
+
+char getActionCommandKey() {
+    char actionCommandKey = ' ';
+    std::string actionCommandKeyString;
+    do {
+        /* 
+         * I know that getchar needs the user to hit enter, but direct action
+         * upon hitting a key is not supported on the linux console.
+         */
+        actionCommandKey = char(std::getchar());
+    } while(actionCommandKey != UP && 
+    actionCommandKey != DOWN && 
+    actionCommandKey != LEFT && 
+    actionCommandKey != RIGHT && 
+    actionCommandKey != QUIT);
+    return actionCommandKey;
+}

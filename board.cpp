@@ -273,3 +273,10 @@ std::vector< std::vector<unsigned> > board::getBoardValues()
 {
     return this->values;
 }
+
+unsigned& board::operator()(const unsigned row, const unsigned col)
+{
+    assert(row < this->size);
+    assert(col < this->size);
+    return this->values.at(row).at(col);
+}

@@ -42,7 +42,6 @@
 #include "helper.h"
 
 class board;
-class line;
 
 /*! \brief Enum used to determine whether a line is a row or a column.
  * 
@@ -151,9 +150,7 @@ public:
      *  \return The address of a board matrix element.
      * 
      */    
-    unsigned& operator()(const unsigned row,const unsigned col) {
-        return this->values.at(row).at(col);
-    };
+    unsigned& operator()(const unsigned row,const unsigned col);
     
 };
 

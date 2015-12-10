@@ -35,67 +35,8 @@
  */
 
 #include <iostream>
-#include <sstream>
 #include "board.h"
-
-/*! \brief Get the board size from STDIN.
- * 
- *  Get the board size from STDIN. Catch erroneous input.
- * 
- *  \return The size of the 2048 board.
- */
-unsigned getBoardSize() {
-    
-    int boardSize;
-    std::string input;
-    bool isValid = false;
-
-    std::cout << "How large should the board be ( > 4, default = 4)?";    
-    while(!isValid) {
-        std::getline(std::cin,input);
-        if(input.empty()) {
-            boardSize = 4;
-            isValid = true;
-        }
-        else {
-            std::istringstream stream(input);
-            stream >> boardSize;
-            if(boardSize < 4) {
-                std::cout << "Invalid number. Please enter a positive integer >= 4." << std::endl;
-                isValid = false;
-            }
-            else {
-                std::cout << "Using a board of size " << boardSize << "." << std::endl;
-                isValid = true;
-            }
-        }
-    }
-    return unsigned(boardSize);
-}
-
-/*! \brief Get a single character (a, s, d, w or q) from the keyboard.
- * 
- *  Get a single character (a, s, d, w or q) from the keyboard. These are used to 
- *  play the game or exit (q).
- * 
- *  \return The character obtained from the keybord.
- */
-char getActionCommandKey() {
-    char actionCommandKey = ' ';
-    std::string actionCommandKeyString;
-    do {
-        /* 
-         * I know that getchar needs the user to hit enter, but direct action
-         * upon hitting a key is not supported on the linux console.
-         */
-        actionCommandKey = char(std::getchar());
-    } while(actionCommandKey != UP && 
-            actionCommandKey != DOWN && 
-            actionCommandKey != LEFT && 
-            actionCommandKey != RIGHT && 
-            actionCommandKey != QUIT);
-    return actionCommandKey;
-}
+#include "helper.h"
 
 /*! \brief Main routine.
  * 

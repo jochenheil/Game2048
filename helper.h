@@ -38,6 +38,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 /*! \brief Different game situations.
  * 
@@ -90,5 +91,22 @@ unsigned generateCellValue(std::mt19937& mt);
  *  \return A centered string containing inputNumber.
  */
 std::string centerNumberstring(const unsigned width,const unsigned inputNumber);
+
+/*! \brief Get the board size from STDIN.
+ * 
+ *  Get the board size from STDIN. Catch erroneous input.
+ * 
+ *  \return The size of the 2048 board.
+ */
+unsigned getBoardSize();
+
+/*! \brief Get a single character (a, s, d, w or q) from the keyboard.
+ * 
+ *  Get a single character (a, s, d, w or q) from the keyboard. These are used to 
+ *  play the game or exit (q).
+ * 
+ *  \return The character obtained from the keybord.
+ */
+char getActionCommandKey();
 
 #endif // HELPER_H
