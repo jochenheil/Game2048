@@ -32,7 +32,7 @@
 
 #include "helper.h"
 
-void printGameoverMessage(gameState_t moveState,unsigned score) {
+void printGameoverMessage(const gameState_t moveState,const unsigned score) {
     std::cout << "!!!   Game over  !!!" << std::endl;
     switch(moveState) {
         case WIN:

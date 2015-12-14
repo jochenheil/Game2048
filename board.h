@@ -101,7 +101,7 @@ public:
      * \param size The number of rows and columns on the board.
      * 
      */
-    board(const unsigned int size);
+    board(const unsigned size);
     
     ~board(); /*!< Destructor that deletes the board object. */
     
@@ -121,7 +121,7 @@ public:
      *  \param lineNumber The index of the row/column to write.
      * 
      */    
-    void fillLine(const char direction, const std::vector<unsigned> fillVector, const unsigned lineNumber);
+    void fillLine(const char direction,std::vector<unsigned> fillVector, const unsigned lineNumber);
 
     /*! \brief Set board values.
      * 
@@ -137,7 +137,7 @@ public:
      * 
      *  \return The current board values.
      */    
-    std::vector<std::vector<unsigned> > getBoardValues();
+    std::vector<std::vector<unsigned> > getBoardValues() const;
 
     /*! \brief Overloaded function call operator for matrix element access.
      * 

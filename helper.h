@@ -55,7 +55,7 @@ enum { UP = 'w', DOWN = 's', LEFT = 'a', RIGHT = 'd', QUIT = 'q' };
  * \param moveState The state of the game.
  * \param score The current score.
  */
-void printGameoverMessage(gameState_t moveState,unsigned score);
+void printGameoverMessage(const gameState_t moveState, const unsigned score);
 
 /*! \brief Combine numbers according to game rules.
  * 

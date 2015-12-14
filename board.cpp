@@ -264,17 +264,17 @@ void board::draw()
     std::cout << std::endl;
 }
 
-void board::setBoardValues(const std::vector< std::vector< unsigned int > > newValues)
+void board::setBoardValues(const std::vector< std::vector< unsigned > > newValues)
 {
     this->values = newValues;
 }
 
-std::vector< std::vector<unsigned> > board::getBoardValues()
+std::vector< std::vector<unsigned> > board::getBoardValues() const
 {
     return this->values;
 }
 
-unsigned& board::operator()(const unsigned row, const unsigned col)
+unsigned& board::operator()(const unsigned row,const unsigned col)
 {
     assert(row < this->size);
     assert(col < this->size);
