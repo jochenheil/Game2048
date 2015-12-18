@@ -39,6 +39,7 @@
 #include <vector>
 #include <iostream>
 #include <random>
+#include <tuple>
 #include "helper.h"
 
 class board;
