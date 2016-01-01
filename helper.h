@@ -39,6 +39,8 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <termios.h>
+#include <unistd.h>
 
 /*! \brief Different game situations.
  * 

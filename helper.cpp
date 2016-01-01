@@ -148,18 +148,35 @@ unsigned getBoardSize() {
 }
 
 char getActionCommandKey() {
-    char actionCommandKey = ' ';
-    std::string actionCommandKeyString;
-    do {
-        /* 
-         * I know that getchar needs the user to hit enter, but direct action
-         * upon hitting a key is not supported on the linux console.
-         */
-        actionCommandKey = char(std::getchar());
-    } while(actionCommandKey != UP && 
-    actionCommandKey != DOWN && 
-    actionCommandKey != LEFT && 
-    actionCommandKey != RIGHT && 
-    actionCommandKey != QUIT);
-    return actionCommandKey;
+
+    struct termios oldTerminal,newTerminal;
+    int key;
+    
+    // Store current terminal mode.
+    tcgetattr(STDIN_FILENO,&oldTerminal);
+    newTerminal = oldTerminal;
+    
+    // Put terminal into "non-canonical" mode, i.e. enable direct unbuffered reading from STDIN.
+    newTerminal.c_lflag &= ~( ICANON | ECHO );
+    tcsetattr(STDIN_FILENO,TCSANOW,&newTerminal);
+    
+    // Get character (w, s, a, d or q).
+    do { key = getchar(); } while(key != 97 && key != 100 && key != 119 && key != 115 && key != 113);
+    
+    // Restore prior terminal mode.
+    tcsetattr(STDIN_FILENO,TCSANOW,&oldTerminal);
+
+    // Convert ASCII code to char.
+    switch(key) {
+        case 97:
+            return LEFT;
+        case 100:
+            return RIGHT;
+        case 119:
+            return UP;
+        case 115:
+            return DOWN;
+    }
+
+    return QUIT;
 }
